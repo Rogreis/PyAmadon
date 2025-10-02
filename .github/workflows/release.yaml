@@ -1,0 +1,57 @@
+name: Build and Release
+
+# Gatilho: A action roda quando uma nova tag começando com 'v' (ex: v1.0) é enviada
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  build-release:
+    name: Build for ${{ matrix.os }}
+    # Roda em máquinas virtuais de Windows e macOS
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, macos-latest]
+
+    steps:
+      # 1. Baixa o código do seu repositório
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      # 2. Configura o ambiente Python
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      # 3. Instala o 'uv' na máquina virtual
+      - name: Install uv (Windows)
+        if: runner.os == 'Windows'
+        run: irm https://astral.sh/uv/install.ps1 | iex
+        shell: pwsh
+
+      - name: Install uv (macOS)
+        if: runner.os == 'macOS'
+        run: curl -LsSf https://astral.sh/uv/install.sh | sh
+      
+      - name: Add uv to PATH (Non-Windows)
+        if: runner.os != 'Windows'
+        run: echo "$HOME/.cargo/bin" >> $GITHUB_PATH
+
+      # 4. Instala as dependências do projeto com uv
+      - name: Install dependencies
+        run: uv sync --dev
+
+      # 5. Roda o PyInstaller para criar o executável
+      - name: Build with PyInstaller
+        run: uv run pyinstaller --onefile --windowed --name "MeuApp-${{ runner.os }}" main.py
+
+      # 6. Cria um Release no GitHub e anexa os executáveis
+      - name: Upload to Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: dist/MeuApp-${{ runner.os }}* # O * lida com .exe no Windows
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
