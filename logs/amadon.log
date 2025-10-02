@@ -34,3 +34,25 @@
 2025-10-02 17:47:00 | Amadon | DEBUG    | __init__:59 | Janela principal configurada
 2025-10-02 17:47:00 | Amadon | INFO     | <module>:356 | Aplicação Amadon iniciada com sucesso
 2025-10-02 17:47:06 | Amadon | INFO     | <module>:362 | Aplicação encerrada normalmente com código: 0
+2025-10-02 20:56:06 | Amadon | INFO     | info:76 | Usando configuração avançada de logging
+2025-10-02 20:56:06 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-02 20:56:06 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-02 20:56:06 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-02 20:56:06 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-02 20:56:18 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-02 20:58:46 | Amadon | INFO     | info:76 | Usando configuração avançada de logging
+2025-10-02 20:58:46 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-02 20:58:46 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-02 20:58:46 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-02 20:59:32 | Amadon | INFO     | info:76 | Usando configuração avançada de logging
+2025-10-02 20:59:32 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-02 20:59:32 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-02 20:59:32 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-02 20:59:32 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-02 20:59:37 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-02 21:01:07 | Amadon | INFO     | info:76 | Usando configuração avançada de logging
+2025-10-02 21:01:07 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-02 21:01:07 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-02 21:01:07 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-02 21:01:07 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-02 21:01:20 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0

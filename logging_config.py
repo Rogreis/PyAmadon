@@ -8,7 +8,7 @@ from pathlib import Path
 from datetime import datetime
 
 
-class AmalonLoggingConfig:
+class AmadonLoggingConfig:
     """Configurador de logging para a aplicação Amadon"""
     
     @staticmethod
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     setup_custom_levels()
     
     # Cria logger avançado
-    config = AmalonLoggingConfig()
+    config = AmadonLoggingConfig()
     logger = config.setup_advanced_logging()
     
     # Testa todos os níveis
