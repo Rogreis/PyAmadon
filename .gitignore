@@ -1,0 +1,19 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+
+# Pastas do PyInstaller
+/dist/
+/build/
+*.spec
+
+# Arquivos de IDEs (opcional, mas recomendado)
+.vscode/
+.idea/
