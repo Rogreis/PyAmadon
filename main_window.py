@@ -8,7 +8,17 @@ from __future__ import annotations
 import logging
 from typing import Optional
 
-from PySide6.QtWidgets import QMainWindow, QLabel, QToolBar, QSizePolicy
+from PySide6.QtWidgets import (
+    QMainWindow,
+    QLabel,
+    QToolBar,
+    QSizePolicy,
+    QStyle,
+    QSplitter,
+    QWidget,
+    QVBoxLayout,
+    QFrame,
+)
 from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QAction, QIcon, QPainter, QPen, QBrush, QColor, QLinearGradient, QPixmap
 
@@ -63,10 +73,8 @@ class MainWindow(QMainWindow):
         self.setWindowTitle("Amadon - Leitura e estudo do Livro de Urântia")
         self.resize(800, 600)
         AmadonLogging.debug(self, "Janela principal configurada")
-
-        label = QLabel("Use o menu ou a barra de ferramentas.", self)
-        label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        self.setCentralWidget(label)
+        # Área central agora é um splitter horizontal (30% / 70%)
+        self._criar_area_central()
 
         # --- Barra de Status ---
         self.status_curto = QLabel("Pronto")
@@ -91,38 +99,8 @@ class MainWindow(QMainWindow):
         self.status_msg.setStyleSheet("QLabel { padding: 2px 6px; }")
         self.statusBar().addPermanentWidget(self.status_msg, 1)
 
-        # --- Ações ---
-        action_nova = QAction(QIcon.fromTheme("document-new"), "&Novo", self)
-        action_nova.setStatusTip("Criar um novo arquivo")
-        action_nova.triggered.connect(self.on_novo_arquivo)
-
-        action_sair = QAction(QIcon.fromTheme("application-exit"), "&Sair", self)
-        action_sair.setStatusTip("Fechar a aplicação")
-        action_sair.triggered.connect(self.close)
-
-        action_teste_status = QAction("&Testar Status", self)
-        action_teste_status.setStatusTip("Testar os campos de status")
-        action_teste_status.triggered.connect(self.on_testar_status)
-
-        action_teste_logs = QAction("Testar &Logs", self)
-        action_teste_logs.setStatusTip("Demonstrar diferentes níveis de log")
-        action_teste_logs.triggered.connect(self.on_testar_logs)
-
-        menu_bar = self.menuBar()
-        menu_arquivo = menu_bar.addMenu("&Arquivo")
-        menu_arquivo.addAction(action_nova)
-        menu_arquivo.addSeparator()
-        menu_arquivo.addAction(action_sair)
-
-        menu_teste = menu_bar.addMenu("&Teste")
-        menu_teste.addAction(action_teste_status)
-        menu_teste.addAction(action_teste_logs)
-
-        toolbar = QToolBar("Barra de Ferramentas Principal")
-        toolbar.setIconSize(QSize(24, 24))
-        self.addToolBar(toolbar)
-        toolbar.addAction(action_nova)
-        toolbar.addAction(action_sair)
+        # Constrói menus e toolbar específicos da aplicação
+        self._criar_menus_e_toolbar()
 
     # --- Logging ---
     def _setup_logger(self):
@@ -171,37 +149,207 @@ class MainWindow(QMainWindow):
     def atualizar_ambos_status(self, curto: str, longo: str):
         MensagensStatus.ambos(self, curto, longo)
 
-    # --- Ações ---
-    def on_testar_status(self):
+    # --- Área central (splitter) ---
+    def _criar_area_central(self):
+        splitter = QSplitter(Qt.Orientation.Horizontal, self)
+        splitter.setChildrenCollapsible(False)
+        splitter.setHandleWidth(8)
+
+        # Painel esquerdo (30%)
+        left = QWidget(splitter)
+        left_layout = QVBoxLayout(left)
+        left_layout.setContentsMargins(6, 6, 6, 6)
+        left_layout.setSpacing(4)
+        left_label = QLabel("Painel Esquerdo\n(30%)", left)
+        left_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        left_label.setStyleSheet("QLabel { font-weight: bold; color: #103a60; }")
+        left_layout.addWidget(left_label)
+
+        # Painel direito (70%)
+        right = QWidget(splitter)
+        right_layout = QVBoxLayout(right)
+        right_layout.setContentsMargins(6, 6, 6, 6)
+        right_layout.setSpacing(4)
+        msg = QLabel("Use o menu ou a barra de ferramentas.", right)
+        msg.setAlignment(Qt.AlignmentFlag.AlignCenter)
+        msg.setStyleSheet("QLabel { font-size: 15px; color: #0a3d7a; }")
+        right_layout.addWidget(msg)
+
+        splitter.addWidget(left)
+        splitter.addWidget(right)
+
+        # Guarda referências se necessário futuramente
+        self.splitter = splitter
+        self.left_panel = left
+        self.right_panel = right
+
+        # Estilo do handle para ficar mais visível
+        splitter.setStyleSheet(
+            """
+            QSplitter::handle {
+                background-color: #0a3d7a;
+                border: 1px solid #082b52;
+                margin: 0px;
+            }
+            QSplitter::handle:hover {
+                background-color: #1565c0;
+            }
+            QSplitter::handle:pressed {
+                background-color: #0d47a1;
+            }
+            """
+        )
+
+        self.setCentralWidget(splitter)
+
+        # Ajusta proporções iniciais após o layout estar pronto
         from PySide6.QtCore import QTimer
-        AmadonLogging.info(self, "Iniciando teste dos campos de status")
-        QTimer.singleShot(2000, lambda: self._finalizar_teste_status())
+        QTimer.singleShot(0, lambda: splitter.setSizes(self._calc_split_sizes()))
 
-    def _finalizar_teste_status(self):
-        self.atualizar_ambos_status("OK", "Teste concluído com sucesso")
-        AmadonLogging.info(self, "Teste dos campos de status concluído com sucesso")
+    def _calc_split_sizes(self):
+        total = max(self.width(), 1)
+        left = int(total * 0.30)
+        right = total - left
+        return [left, right]
 
-    def on_testar_logs(self):
-        AmadonLogging.debug(self, "Mensagem de DEBUG - informações detalhadas para desenvolvimento")
-        AmadonLogging.info(self, "Mensagem de INFO - informações gerais sobre o funcionamento")
-        AmadonLogging.warning(self, "Mensagem de WARNING - algo pode estar incorreto")
-        AmadonLogging.error(self, "Mensagem de ERROR - erro que não impede a execução")
-        try:
-            _ = 10 / 0
-        except ZeroDivisionError as e:
-            # Usa novo método que recebe explicitamente a exception
-            AmadonLogging.error_with_exception(self, "Erro simulado capturado", e)
-        self.set_status_mensagem("Diferentes níveis de log foram registrados - verifique amadon.log")
-        self.atualizar_status_curto("Log")
-        self.atualizar_status_longo("Logs demonstrados")
+    # --- Ações ---
+    # --- Novas ações principais ---
+    def _criar_menus_e_toolbar(self):
+        """Cria menu bar e toolbar com ações principais da aplicação."""
+        menu_bar = self.menuBar()
 
-    def on_novo_arquivo(self):
-        AmadonLogging.info(self, "Ação 'Novo Arquivo' executada pelo usuário")
-        self.atualizar_status_curto("Novo")
-        self.atualizar_status_longo("Arquivo criado")
-        self.set_status_mensagem("Novo arquivo criado (simulado).")
-        self.centralWidget().setText("Um novo arquivo foi iniciado!")
-        AmadonLogging.debug(self, "Interface atualizada após criação de novo arquivo")
+        # Limpa menus existentes (se reconstruir futuramente)
+        while menu_bar.actions():
+            menu_bar.removeAction(menu_bar.actions()[0])
+
+        # Ações: cada uma com ícone (tentando tema; fallback simples se ausente)
+        # Usa ícones de tema quando disponíveis; caso contrário, fallback para ícones padrão do QStyle
+        self._action_documentos = QAction(self._theme_icon("folder-documents", QStyle.StandardPixmap.SP_DirIcon), "&Documentos", self)
+        self._action_assuntos = QAction(self._theme_icon("view-list", QStyle.StandardPixmap.SP_FileDialogListView), "&Assuntos", self)
+        self._action_artigos = QAction(self._theme_icon("text-x-generic", QStyle.StandardPixmap.SP_FileIcon), "&Artigos", self)
+        self._action_busca = QAction(self._theme_icon("edit-find", QStyle.StandardPixmap.SP_DialogOpenButton), "&Busca", self)
+        self._action_config = QAction(self._theme_icon("settings", QStyle.StandardPixmap.SP_FileDialogDetailedView), "&Configuração", self)
+        self._action_ajuda = QAction(self._theme_icon("help-browser", QStyle.StandardPixmap.SP_DialogHelpButton), "&Ajuda", self)
+
+        # Conecta sinais às rotinas privadas
+        self._action_documentos.triggered.connect(self._abrir_documentos)
+        self._action_assuntos.triggered.connect(self._abrir_assuntos)
+        self._action_artigos.triggered.connect(self._abrir_artigos)
+        self._action_busca.triggered.connect(self._abrir_busca)
+        self._action_config.triggered.connect(self._abrir_configuracao)
+        self._action_ajuda.triggered.connect(self._abrir_ajuda)
+
+        # # Menus (podemos agrupar conforme evolução futura)
+        # menu_conteudo = menu_bar.addMenu("&Conteúdo")
+        # menu_conteudo.addAction(self._action_documentos)
+        # menu_conteudo.addAction(self._action_assuntos)
+        # menu_conteudo.addAction(self._action_artigos)
+        # menu_conteudo.addSeparator()
+        # menu_conteudo.addAction(self._action_busca)
+
+        # menu_sistema = menu_bar.addMenu("&Sistema")
+        # menu_sistema.addAction(self._action_config)
+        # menu_sistema.addAction(self._action_ajuda)
+
+        # Toolbar principal
+        toolbar = QToolBar("Principal")
+        toolbar.setIconSize(QSize(32, 32))
+        # Mostra ícone + texto (texto abaixo do ícone)
+        toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
+        self.addToolBar(toolbar)
+        # Ações na ordem desejada
+        toolbar.addAction(self._action_documentos)
+        toolbar.addAction(self._action_assuntos)
+        toolbar.addAction(self._action_artigos)
+        toolbar.addSeparator()
+        toolbar.addAction(self._action_busca)
+        toolbar.addSeparator()
+        toolbar.addAction(self._action_config)
+        toolbar.addAction(self._action_ajuda)
+
+        # Estilização: fundo azul, texto branco grande e negrito, mudança em hover
+        toolbar.setStyleSheet(
+            """
+            QToolBar {
+                background: #0a3d7a; /* Azul profundo de base */
+                border: 0px;
+                spacing: 4px;
+                padding: 4px 6px;
+            }
+            QToolBar QToolButton {
+                background-color: #1565c0; /* Azul médio */
+                color: #ffffff;
+                font-weight: bold;
+                font-size: 13px;
+                padding: 6px 10px 4px 10px;
+                border-radius: 6px;
+                margin: 2px;
+                /* remove borda visual extra */
+                border: 1px solid rgba(255,255,255,25);
+            }
+            QToolBar QToolButton:hover {
+                background-color: #1e88e5; /* Azul mais claro no hover */
+                color: #fffbf0; /* Leve tom quente */
+                border: 1px solid rgba(255,255,255,60);
+            }
+            QToolBar QToolButton:pressed {
+                background-color: #0d47a1; /* Azul escuro pressionado */
+                color: #ffffff;
+                border: 1px solid rgba(255,255,255,90);
+            }
+            QToolBar QToolButton:checked {
+                background-color: #0b5599; /* Estado marcado */
+                color: #ffffff;
+                border: 1px solid rgba(255,255,255,120);
+            }
+            """
+        )
+
+    def _theme_icon(self, theme_name: str, fallback_sp: QStyle.StandardPixmap) -> QIcon:
+        """Tenta obter um ícone pelo nome de tema; se não existir (comum no Windows), usa fallback do QStyle.
+
+        Parameters
+        ----------
+        theme_name : str
+            Nome do ícone no tema (ex.: 'folder-documents').
+        fallback_sp : QStyle.StandardPixmap
+            Enum de ícone padrão para fallback.
+        """
+        icon = QIcon.fromTheme(theme_name)
+        if icon.isNull():
+            icon = self.style().standardIcon(fallback_sp)
+        return icon
+
+    # Handlers privados (placeholders)
+    def _abrir_documentos(self):
+        AmadonLogging.info(self, "Abrindo módulo: Documentos (placeholder)")
+        self.set_status_mensagem("Documentos em desenvolvimento...")
+        self.atualizar_status_curto("Doc")
+
+    def _abrir_assuntos(self):
+        AmadonLogging.info(self, "Abrindo módulo: Assuntos (placeholder)")
+        self.set_status_mensagem("Assuntos em desenvolvimento...")
+        self.atualizar_status_curto("Ass")
+
+    def _abrir_artigos(self):
+        AmadonLogging.info(self, "Abrindo módulo: Artigos (placeholder)")
+        self.set_status_mensagem("Artigos em desenvolvimento...")
+        self.atualizar_status_curto("Art")
+
+    def _abrir_busca(self):
+        AmadonLogging.info(self, "Abrindo módulo: Busca (placeholder)")
+        self.set_status_mensagem("Busca em desenvolvimento...")
+        self.atualizar_status_curto("Bus")
+
+    def _abrir_configuracao(self):
+        AmadonLogging.info(self, "Abrindo módulo: Configuração (placeholder)")
+        self.set_status_mensagem("Configuração em desenvolvimento...")
+        self.atualizar_status_curto("Cfg")
+
+    def _abrir_ajuda(self):
+        AmadonLogging.info(self, "Abrindo módulo: Ajuda (placeholder)")
+        self.set_status_mensagem("Ajuda em desenvolvimento...")
+        self.atualizar_status_curto("Help")
 
     # --- Ícone ---
     def _apply_window_icon(self):

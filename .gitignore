@@ -17,3 +17,5 @@ wheels/
 # Arquivos de IDEs (opcional, mas recomendado)
 .vscode/
 .idea/
+/logs/
+
