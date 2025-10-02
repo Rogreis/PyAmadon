@@ -12,6 +12,25 @@ wheels = [
 ]
 
 [[package]]
+name = "amadon"
+version = "0.1.0"
+source = { virtual = "." }
+dependencies = [
+    { name = "pyside6" },
+]
+
+[package.dev-dependencies]
+dev = [
+    { name = "pyinstaller" },
+]
+
+[package.metadata]
+requires-dist = [{ name = "pyside6", specifier = ">=6.9.3" }]
+
+[package.metadata.requires-dev]
+dev = [{ name = "pyinstaller", specifier = ">=6.16.0" }]
+
+[[package]]
 name = "macholib"
 version = "1.16.3"
 source = { registry = "https://pypi.org/simple" }
@@ -40,25 +59,6 @@ sdist = { url = "https://files.pythonhosted.org/packages/78/c5/3b3c62223f72e2360
 wheels = [
     { url = "https://files.pythonhosted.org/packages/55/26/d0ad8b448476d0a1e8d3ea5622dc77b916db84c6aa3cb1e1c0965af948fc/pefile-2023.2.7-py3-none-any.whl", hash = "sha256:da185cd2af68c08a6cd4481f7325ed600a88f6a813bad9dea07ab3ef73d8d8d6", size = 71791, upload-time = "2023-02-07T12:28:36.678Z" },
 ]
-
-[[package]]
-name = "pyamadon"
-version = "0.1.0"
-source = { virtual = "." }
-dependencies = [
-    { name = "pyside6" },
-]
-
-[package.dev-dependencies]
-dev = [
-    { name = "pyinstaller" },
-]
-
-[package.metadata]
-requires-dist = [{ name = "pyside6", specifier = ">=6.9.3" }]
-
-[package.metadata.requires-dev]
-dev = [{ name = "pyinstaller", specifier = ">=6.16.0" }]
 
 [[package]]
 name = "pyinstaller"

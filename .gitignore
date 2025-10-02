@@ -12,7 +12,7 @@ wheels/
 # Pastas do PyInstaller
 /dist/
 /build/
-*.spec
+# Removi *.spec para manter o Amadon.spec no repositório
 
 # Arquivos de IDEs (opcional, mas recomendado)
 .vscode/

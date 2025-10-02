@@ -47,14 +47,18 @@ jobs:
       - name: Install dependencies
         run: uv sync --dev
 
-      # 5. Roda o PyInstaller para criar o executável
-      - name: Build with PyInstaller
-        run: uv run pyinstaller --onefile --windowed --name "MeuApp-${{ runner.os }}" main.py
+      # 5. Gera ícones
+      - name: Generate icons
+        run: uv run python generate_icons.py
 
-      # 6. Cria um Release no GitHub e anexa os executáveis
+      # 6. Roda o PyInstaller usando spec (inclui ícone)
+      - name: Build with PyInstaller
+        run: uv run pyinstaller Amadon.spec
+
+  # 7. Cria um Release no GitHub e anexa os executáveis
       - name: Upload to Release
         uses: softprops/action-gh-release@v1
         with:
-          files: dist/MeuApp-${{ runner.os }}* # O * lida com .exe no Windows
+          files: dist/Amadon-${{ runner.os }}* # O * lida com .exe no Windows
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

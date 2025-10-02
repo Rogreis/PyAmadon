@@ -1,7 +1,7 @@
 [project]
-name = "pyamadon"
+name = "Amadon"
 version = "0.1.0"
-description = "Add your description here"
+description = "Leitua e estudo do Livro de Urântia"
 readme = "README.md"
 requires-python = ">=3.12"
 dependencies = [

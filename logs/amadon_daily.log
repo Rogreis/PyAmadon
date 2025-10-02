@@ -1,0 +1,28 @@
+2025-10-02 17:03:05 | Amadon | INFO     | _setup_logger:110 | Usando configuração avançada de logging
+2025-10-02 17:03:05 | Amadon | INFO     | __init__:21 | Iniciando aplicação Amadon
+2025-10-02 17:03:05 | Amadon | INFO     | <module>:205 | Aplicação Amadon iniciada com sucesso
+2025-10-02 17:03:18 | Amadon | INFO     | <module>:211 | Aplicação encerrada normalmente com código: 0
+2025-10-02 17:03:20 | Amadon | INFO     | <module>:149 | Mensagem de INFO
+2025-10-02 17:03:20 | Amadon | WARNING  | <module>:150 | Mensagem de WARNING
+2025-10-02 17:03:20 | Amadon | ERROR    | <module>:151 | Mensagem de ERROR
+2025-10-02 17:03:20 | Amadon | FATAL    | fatal:132 | Mensagem de FATAL - erro crítico
+2025-10-02 17:10:36 | Amadon | INFO     | _setup_logger:110 | Usando configuração avançada de logging
+2025-10-02 17:10:36 | Amadon | INFO     | __init__:21 | Iniciando aplicação Amadon
+2025-10-02 17:10:36 | Amadon | INFO     | <module>:205 | Aplicação Amadon iniciada com sucesso
+2025-10-02 17:10:57 | Amadon | INFO     | <module>:211 | Aplicação encerrada normalmente com código: 0
+2025-10-02 17:17:07 | Amadon | INFO     | _setup_logger:113 | Usando configuração avançada de logging
+2025-10-02 17:17:07 | Amadon | INFO     | __init__:21 | Iniciando aplicação Amadon
+2025-10-02 17:17:07 | Amadon | INFO     | <module>:218 | Aplicação Amadon iniciada com sucesso
+2025-10-02 17:18:29 | Amadon | INFO     | <module>:224 | Aplicação encerrada normalmente com código: 0
+2025-10-02 17:21:09 | Amadon | INFO     | _setup_logger:138 | Usando configuração avançada de logging
+2025-10-02 17:21:09 | Amadon | INFO     | __init__:47 | Iniciando aplicação Amadon
+2025-10-02 17:21:09 | Amadon | INFO     | <module>:243 | Aplicação Amadon iniciada com sucesso
+2025-10-02 17:21:30 | Amadon | INFO     | <module>:249 | Aplicação encerrada normalmente com código: 0
+2025-10-02 17:26:40 | Amadon | INFO     | _setup_logger:143 | Usando configuração avançada de logging
+2025-10-02 17:26:40 | Amadon | INFO     | __init__:47 | Iniciando aplicação Amadon
+2025-10-02 17:26:40 | Amadon | INFO     | <module>:248 | Aplicação Amadon iniciada com sucesso
+2025-10-02 17:26:53 | Amadon | INFO     | <module>:254 | Aplicação encerrada normalmente com código: 0
+2025-10-02 17:47:00 | Amadon | INFO     | _setup_logger:151 | Usando configuração avançada de logging
+2025-10-02 17:47:00 | Amadon | INFO     | __init__:52 | Iniciando aplicação Amadon
+2025-10-02 17:47:00 | Amadon | INFO     | <module>:356 | Aplicação Amadon iniciada com sucesso
+2025-10-02 17:47:06 | Amadon | INFO     | <module>:362 | Aplicação encerrada normalmente com código: 0
