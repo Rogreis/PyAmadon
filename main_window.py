@@ -77,35 +77,52 @@ class MainWindow(QMainWindow):
         AmadonLogging.info(self, _("log.init.app"))
         self._apply_window_icon()
         self.setWindowTitle(_("app.title"))
-        self.resize(800, 600)
+        # Restaura tamanho/posição se existir
+        try:
+            from app_settings import settings
+            if settings.win_size:
+                self.resize(*settings.win_size)
+            else:
+                self.resize(800, 600)
+            if settings.win_pos:
+                self.move(*settings.win_pos)
+        except Exception:
+            self.resize(800, 600)
         AmadonLogging.debug(self, _("log.window.ready"))
         # Área central agora é um splitter horizontal (30% / 70%)
         self._criar_area_central()
 
         # --- Barra de Status ---
         self.status_curto = QLabel(_("status.pronto"))
+        self.status_curto.setObjectName("StatusCurtoLabel")
         self.status_curto.setFixedWidth(80)
-        self.status_curto.setStyleSheet(
-            "QLabel { color: #5a5a5a; font-style: italic; padding: 0 4px; margin-right: 8px; }"
-        )
         self.status_longo = QLabel(_("status.sistema_inicializado"))
+        self.status_longo.setObjectName("StatusLongoLabel")
         self.status_longo.setFixedWidth(200)
-        self.status_longo.setStyleSheet(
-            "QLabel { color: #4a4a4a; font-style: italic; padding: 0 4px; margin-right: 12px; }"
-        )
 
         self.statusBar().addWidget(self.status_curto)
         self.statusBar().addWidget(self.status_longo)
 
-        self.status_msg = ElidedLabel(
-            _("app.title"),
-            elide_mode=Qt.TextElideMode.ElideRight
-        )
-        self.status_msg.setStyleSheet("QLabel { padding: 2px 6px; }")
+        self.status_msg = ElidedLabel(_("app.title"), elide_mode=Qt.TextElideMode.ElideRight)
+        self.status_msg.setObjectName("StatusPrincipalLabel")
         self.statusBar().addPermanentWidget(self.status_msg, 1)
 
         # Constrói menus e toolbar específicos da aplicação
         self._criar_menus_e_toolbar()
+        # Reabre último módulo ou abre Documentos se não definido
+        try:
+            from app_settings import settings as _settings
+            mapping = {
+                'documentos': self._abrir_documentos,
+                'assuntos': self._abrir_assuntos,
+                'artigos': self._abrir_artigos,
+                'busca': self._abrir_busca,
+                'configuracao': self._abrir_configuracao,
+                'ajuda': self._abrir_ajuda,
+            }
+            (mapping.get(_settings.last_module) or self._abrir_documentos)()
+        except Exception:
+            self._abrir_documentos()
 
     # --- Logging ---
     def _setup_logger(self):
@@ -159,26 +176,17 @@ class MainWindow(QMainWindow):
         splitter = QSplitter(Qt.Orientation.Horizontal, self)
         splitter.setChildrenCollapsible(False)
         splitter.setHandleWidth(8)
-
-        # Painel esquerdo (30%)
+        # Painel esquerdo (30%) - sem placeholder inicial
         left = QWidget(splitter)
         left_layout = QVBoxLayout(left)
         left_layout.setContentsMargins(6, 6, 6, 6)
         left_layout.setSpacing(4)
-        left_label = QLabel(_("placeholder.left.panel"), left)
-        left_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        left_label.setStyleSheet("QLabel { font-weight: bold; color: #103a60; }")
-        left_layout.addWidget(left_label)
 
-        # Painel direito (70%)
+        # Painel direito (70%) - sem placeholder inicial
         right = QWidget(splitter)
         right_layout = QVBoxLayout(right)
         right_layout.setContentsMargins(6, 6, 6, 6)
         right_layout.setSpacing(4)
-        msg = QLabel(_("placeholder.center.message"), right)
-        msg.setAlignment(Qt.AlignmentFlag.AlignCenter)
-        msg.setStyleSheet("QLabel { font-size: 15px; color: #0a3d7a; }")
-        right_layout.addWidget(msg)
 
         splitter.addWidget(left)
         splitter.addWidget(right)
@@ -189,27 +197,35 @@ class MainWindow(QMainWindow):
         self.right_panel = right
 
         # Estilo do handle para ficar mais visível
-        splitter.setStyleSheet(
-            """
-            QSplitter::handle {
-                background-color: #0a3d7a;
-                border: 1px solid #082b52;
-                margin: 0px;
-            }
-            QSplitter::handle:hover {
-                background-color: #1565c0;
-            }
-            QSplitter::handle:pressed {
-                background-color: #0d47a1;
-            }
-            """
-        )
+        from app_settings import settings as _settings_theme
+        if _settings_theme.dark_mode:
+            splitter.setStyleSheet(
+                """
+                QSplitter::handle { background-color:#2a2a2a; border:1px solid #3a3a3a; margin:0; }
+                QSplitter::handle:hover { background-color:#3a3a3a; }
+                QSplitter::handle:pressed { background-color:#1565c0; }
+                """
+            )
+        else:
+            splitter.setStyleSheet(
+                """
+                QSplitter::handle { background-color:#0a3d7a; border:1px solid #082b52; margin:0; }
+                QSplitter::handle:hover { background-color:#1565c0; }
+                QSplitter::handle:pressed { background-color:#0d47a1; }
+                """
+            )
 
         self.setCentralWidget(splitter)
 
         # Ajusta proporções iniciais após o layout estar pronto
         from PySide6.QtCore import QTimer
-        QTimer.singleShot(0, lambda: splitter.setSizes(self._calc_split_sizes()))
+        from app_settings import settings as _settings2
+        def _apply_sizes():
+            if _settings2.splitter_sizes:
+                splitter.setSizes(_settings2.splitter_sizes)
+            else:
+                splitter.setSizes(self._calc_split_sizes())
+        QTimer.singleShot(0, _apply_sizes)
 
     def _calc_split_sizes(self):
         total = max(self.width(), 1)
@@ -266,10 +282,24 @@ class MainWindow(QMainWindow):
 
         # Toolbar principal
         toolbar = QToolBar("Principal")
+        toolbar.setObjectName("MainToolBar")
         toolbar.setIconSize(QSize(32, 32))
-        # Mostra ícone + texto (texto abaixo do ícone)
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.addToolBar(toolbar)
+        # Ação atalho modo escuro
+        from PySide6.QtGui import QKeySequence
+        from app_settings import settings as _settings, apply_global_theme
+        self._action_toggle_dark = QAction("Dark", self)
+        self._action_toggle_dark.setShortcut(QKeySequence("Ctrl+Alt+D"))
+        self._action_toggle_dark.setToolTip("Alternar modo escuro (Ctrl+Alt+D)")
+        def _toggle_dark():
+            _settings.dark_mode = not _settings.dark_mode
+            from PySide6.QtWidgets import QApplication
+            app = QApplication.instance()
+            if app:
+                apply_global_theme(app)
+            _settings.save()
+        self._action_toggle_dark.triggered.connect(_toggle_dark)
         # Ações na ordem desejada
         toolbar.addAction(self._action_documentos)
         toolbar.addAction(self._action_assuntos)
@@ -279,44 +309,10 @@ class MainWindow(QMainWindow):
         toolbar.addSeparator()
         toolbar.addAction(self._action_config)
         toolbar.addAction(self._action_ajuda)
+        toolbar.addSeparator()
+        toolbar.addAction(self._action_toggle_dark)
 
-        # Estilização: fundo azul, texto branco grande e negrito, mudança em hover
-        toolbar.setStyleSheet(
-            """
-            QToolBar {
-                background: #0a3d7a; /* Azul profundo de base */
-                border: 0px;
-                spacing: 4px;
-                padding: 4px 6px;
-            }
-            QToolBar QToolButton {
-                background-color: #1565c0; /* Azul médio */
-                color: #ffffff;
-                font-weight: bold;
-                font-size: 13px;
-                padding: 6px 10px 4px 10px;
-                border-radius: 6px;
-                margin: 2px;
-                /* remove borda visual extra */
-                border: 1px solid rgba(255,255,255,25);
-            }
-            QToolBar QToolButton:hover {
-                background-color: #1e88e5; /* Azul mais claro no hover */
-                color: #fffbf0; /* Leve tom quente */
-                border: 1px solid rgba(255,255,255,60);
-            }
-            QToolBar QToolButton:pressed {
-                background-color: #0d47a1; /* Azul escuro pressionado */
-                color: #ffffff;
-                border: 1px solid rgba(255,255,255,90);
-            }
-            QToolBar QToolButton:checked {
-                background-color: #0b5599; /* Estado marcado */
-                color: #ffffff;
-                border: 1px solid rgba(255,255,255,120);
-            }
-            """
-        )
+        # Estilo da toolbar agora definido no stylesheet global
 
     def _theme_icon(self, theme_name: str, fallback_sp: QStyle.StandardPixmap) -> QIcon:
         """Tenta obter um ícone pelo nome de tema; se não existir (comum no Windows), usa fallback do QStyle.
@@ -335,22 +331,48 @@ class MainWindow(QMainWindow):
 
     # Handlers privados (placeholders)
     def _abrir_documentos(self):
+        from app_settings import settings
+        settings.last_module = 'documentos'
         ToolBar_Documentos(self).GenerateData()
 
     def _abrir_assuntos(self):
+        from app_settings import settings
+        settings.last_module = 'assuntos'
         ToolBar_Assuntos(self).GenerateData()
 
     def _abrir_artigos(self):
+        from app_settings import settings
+        settings.last_module = 'artigos'
         ToolBar_Artigos(self).GenerateData()
 
     def _abrir_busca(self):
+        from app_settings import settings
+        settings.last_module = 'busca'
         ToolBar_Busca(self).GenerateData()
 
     def _abrir_configuracao(self):
+        from app_settings import settings
+        settings.last_module = 'configuracao'
         ToolBar_Configuracao(self).GenerateData()
 
     def _abrir_ajuda(self):
+        from app_settings import settings
+        settings.last_module = 'ajuda'
         ToolBar_Ajuda(self).GenerateData()
+
+    def closeEvent(self, event):  # type: ignore[override]
+        # Salva tamanho e posição
+        try:
+            from app_settings import settings
+            settings.win_size = [self.width(), self.height()]
+            pos = self.pos()
+            settings.win_pos = [pos.x(), pos.y()]
+            if hasattr(self, 'splitter'):
+                settings.splitter_sizes = self.splitter.sizes()
+            settings.save()
+        except Exception:
+            pass
+        super().closeEvent(event)
 
     # --- Ícone ---
     def _apply_window_icon(self):

@@ -1,0 +1,38 @@
+{
+  "nodes": [
+    {
+      "titulo": "Parte I",
+      "link": "doc://Doc001.html#p001_000_000",
+      "filhos": [
+        {
+          "titulo": "Seção 1",
+          "link": "doc://Doc002.html#p001_001_000",
+          "filhos": [
+            {"titulo": "Documento 1", "link": "doc://Doc003.html#p001_001_001"},
+            {"titulo": "Documento 2", "link": "doc://Doc004.html#p001_001_002"}
+          ]
+        },
+        {
+          "titulo": "Seção 2",
+          "link": "doc://Doc005.html#p001_002_000",
+          "filhos": [
+            {"titulo": "Documento 3", "link": "doc://Doc006.html#p001_002_001"}
+          ]
+        }
+      ]
+    },
+    {
+      "titulo": "Parte II",
+      "link": "doc://Doc010.html#p002_000_000",
+      "filhos": [
+        {
+          "titulo": "Estrutura A",
+          "link": "doc://Doc011.html#p002_001_000",
+          "filhos": [
+            {"titulo": "Item A1", "link": "doc://Doc012.html#p002_001_001"}
+          ]
+        }
+      ]
+    }
+  ]
+}

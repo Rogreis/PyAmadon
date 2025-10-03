@@ -1,0 +1,7 @@
+/* CSS exemplo para módulo Documentos */
+body { font-family: 'Segoe UI', Arial, sans-serif; background:#f8fafc; }
+h2 { color:#0a3d7a; margin-top:0; }
+.card-title { color:#0a3d7a; }
+#ctr { min-width:24px; display:inline-block; }
+.btn-primary { box-shadow: 0 2px 4px rgba(0,0,0,0.15); }
+.footer-note { font-size:11px; color:#666; margin-top:10px; }
