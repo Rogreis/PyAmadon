@@ -23,6 +23,13 @@ from PySide6.QtCore import Qt, QSize
 from PySide6.QtGui import QAction, QIcon, QPainter, QPen, QBrush, QColor, QLinearGradient, QPixmap
 
 from mensagens import MensagensStatus, AmadonLogging
+from i18n import _
+from tbar_functions.tbar_documentos import ToolBar_Documentos
+from tbar_functions.tbar_assuntos import ToolBar_Assuntos
+from tbar_functions.tbar_artigos import ToolBar_Artigos
+from tbar_functions.tbar_busca import ToolBar_Busca
+from tbar_functions.tbar_configuracao import ToolBar_Configuracao
+from tbar_functions.tbar_ajuda import ToolBar_Ajuda
 
 # Importa configuração avançada de logging (opcional)
 try:
@@ -67,23 +74,21 @@ class MainWindow(QMainWindow):
     def __init__(self):
         super().__init__()
         self._setup_logger()
-        AmadonLogging.info(self, "Iniciando aplicação Amadon")
+        AmadonLogging.info(self, _("log.init.app"))
         self._apply_window_icon()
-
-        self.setWindowTitle("Amadon - Leitura e estudo do Livro de Urântia")
+        self.setWindowTitle(_("app.title"))
         self.resize(800, 600)
-        AmadonLogging.debug(self, "Janela principal configurada")
+        AmadonLogging.debug(self, _("log.window.ready"))
         # Área central agora é um splitter horizontal (30% / 70%)
         self._criar_area_central()
 
         # --- Barra de Status ---
-        self.status_curto = QLabel("Pronto")
+        self.status_curto = QLabel(_("status.pronto"))
         self.status_curto.setFixedWidth(80)
         self.status_curto.setStyleSheet(
             "QLabel { color: #5a5a5a; font-style: italic; padding: 0 4px; margin-right: 8px; }"
         )
-
-        self.status_longo = QLabel("Sistema inicializado")
+        self.status_longo = QLabel(_("status.sistema_inicializado"))
         self.status_longo.setFixedWidth(200)
         self.status_longo.setStyleSheet(
             "QLabel { color: #4a4a4a; font-style: italic; padding: 0 4px; margin-right: 12px; }"
@@ -93,7 +98,7 @@ class MainWindow(QMainWindow):
         self.statusBar().addWidget(self.status_longo)
 
         self.status_msg = ElidedLabel(
-            "Amadon - Sistema de estudo do Livro de Urântia",
+            _("app.title"),
             elide_mode=Qt.TextElideMode.ElideRight
         )
         self.status_msg.setStyleSheet("QLabel { padding: 2px 6px; }")
@@ -106,7 +111,7 @@ class MainWindow(QMainWindow):
     def _setup_logger(self):
         if USE_ADVANCED_LOGGING:
             self.logger = AmadonLoggingConfig.setup_advanced_logging('Amadon')
-            AmadonLogging.info(self, "Usando configuração avançada de logging")
+            AmadonLogging.info(self, _("log.init.app"))
         else:
             self._setup_basic_logger()
 
@@ -135,7 +140,7 @@ class MainWindow(QMainWindow):
 
     def clear_status_mensagem(self):
         MensagensStatus.limpar_principal(self)
-        AmadonLogging.debug(self, "Status principal limpo")
+        AmadonLogging.debug(self, _("log.status.cleared"))
 
     def atualizar_status_curto(self, texto: str):
         MensagensStatus.curto(self, texto)
@@ -160,7 +165,7 @@ class MainWindow(QMainWindow):
         left_layout = QVBoxLayout(left)
         left_layout.setContentsMargins(6, 6, 6, 6)
         left_layout.setSpacing(4)
-        left_label = QLabel("Painel Esquerdo\n(30%)", left)
+        left_label = QLabel(_("placeholder.left.panel"), left)
         left_label.setAlignment(Qt.AlignmentFlag.AlignCenter)
         left_label.setStyleSheet("QLabel { font-weight: bold; color: #103a60; }")
         left_layout.addWidget(left_label)
@@ -170,7 +175,7 @@ class MainWindow(QMainWindow):
         right_layout = QVBoxLayout(right)
         right_layout.setContentsMargins(6, 6, 6, 6)
         right_layout.setSpacing(4)
-        msg = QLabel("Use o menu ou a barra de ferramentas.", right)
+        msg = QLabel(_("placeholder.center.message"), right)
         msg.setAlignment(Qt.AlignmentFlag.AlignCenter)
         msg.setStyleSheet("QLabel { font-size: 15px; color: #0a3d7a; }")
         right_layout.addWidget(msg)
@@ -224,12 +229,20 @@ class MainWindow(QMainWindow):
 
         # Ações: cada uma com ícone (tentando tema; fallback simples se ausente)
         # Usa ícones de tema quando disponíveis; caso contrário, fallback para ícones padrão do QStyle
-        self._action_documentos = QAction(self._theme_icon("folder-documents", QStyle.StandardPixmap.SP_DirIcon), "&Documentos", self)
-        self._action_assuntos = QAction(self._theme_icon("view-list", QStyle.StandardPixmap.SP_FileDialogListView), "&Assuntos", self)
-        self._action_artigos = QAction(self._theme_icon("text-x-generic", QStyle.StandardPixmap.SP_FileIcon), "&Artigos", self)
-        self._action_busca = QAction(self._theme_icon("edit-find", QStyle.StandardPixmap.SP_DialogOpenButton), "&Busca", self)
-        self._action_config = QAction(self._theme_icon("settings", QStyle.StandardPixmap.SP_FileDialogDetailedView), "&Configuração", self)
-        self._action_ajuda = QAction(self._theme_icon("help-browser", QStyle.StandardPixmap.SP_DialogHelpButton), "&Ajuda", self)
+        self._action_documentos = QAction(self._theme_icon("folder-documents", QStyle.StandardPixmap.SP_DirIcon), f"&{_("toolbar.documentos")}", self)
+        self._action_assuntos = QAction(self._theme_icon("view-list", QStyle.StandardPixmap.SP_FileDialogListView), f"&{_("toolbar.assuntos")}", self)
+        self._action_artigos = QAction(self._theme_icon("text-x-generic", QStyle.StandardPixmap.SP_FileIcon), f"&{_("toolbar.artigos")}", self)
+        self._action_busca = QAction(self._theme_icon("edit-find", QStyle.StandardPixmap.SP_DialogOpenButton), f"&{_("toolbar.busca")}", self)
+        self._action_config = QAction(self._theme_icon("settings", QStyle.StandardPixmap.SP_FileDialogDetailedView), f"&{_("toolbar.configuracao")}", self)
+        self._action_ajuda = QAction(self._theme_icon("help-browser", QStyle.StandardPixmap.SP_DialogHelpButton), f"&{_("toolbar.ajuda")}", self)
+
+        # Tooltips detalhados
+        self._action_documentos.setToolTip(_("tooltip.documentos"))
+        self._action_assuntos.setToolTip(_("tooltip.assuntos"))
+        self._action_artigos.setToolTip(_("tooltip.artigos"))
+        self._action_busca.setToolTip(_("tooltip.busca"))
+        self._action_config.setToolTip(_("tooltip.configuracao"))
+        self._action_ajuda.setToolTip(_("tooltip.ajuda"))
 
         # Conecta sinais às rotinas privadas
         self._action_documentos.triggered.connect(self._abrir_documentos)
@@ -322,34 +335,22 @@ class MainWindow(QMainWindow):
 
     # Handlers privados (placeholders)
     def _abrir_documentos(self):
-        AmadonLogging.info(self, "Abrindo módulo: Documentos (placeholder)")
-        self.set_status_mensagem("Documentos em desenvolvimento...")
-        self.atualizar_status_curto("Doc")
+        ToolBar_Documentos(self).GenerateData()
 
     def _abrir_assuntos(self):
-        AmadonLogging.info(self, "Abrindo módulo: Assuntos (placeholder)")
-        self.set_status_mensagem("Assuntos em desenvolvimento...")
-        self.atualizar_status_curto("Ass")
+        ToolBar_Assuntos(self).GenerateData()
 
     def _abrir_artigos(self):
-        AmadonLogging.info(self, "Abrindo módulo: Artigos (placeholder)")
-        self.set_status_mensagem("Artigos em desenvolvimento...")
-        self.atualizar_status_curto("Art")
+        ToolBar_Artigos(self).GenerateData()
 
     def _abrir_busca(self):
-        AmadonLogging.info(self, "Abrindo módulo: Busca (placeholder)")
-        self.set_status_mensagem("Busca em desenvolvimento...")
-        self.atualizar_status_curto("Bus")
+        ToolBar_Busca(self).GenerateData()
 
     def _abrir_configuracao(self):
-        AmadonLogging.info(self, "Abrindo módulo: Configuração (placeholder)")
-        self.set_status_mensagem("Configuração em desenvolvimento...")
-        self.atualizar_status_curto("Cfg")
+        ToolBar_Configuracao(self).GenerateData()
 
     def _abrir_ajuda(self):
-        AmadonLogging.info(self, "Abrindo módulo: Ajuda (placeholder)")
-        self.set_status_mensagem("Ajuda em desenvolvimento...")
-        self.atualizar_status_curto("Help")
+        ToolBar_Ajuda(self).GenerateData()
 
     # --- Ícone ---
     def _apply_window_icon(self):
@@ -358,9 +359,9 @@ class MainWindow(QMainWindow):
             self.setWindowIcon(icon)
             if hasattr(self, 'windowHandle'):
                 pass
-            AmadonLogging.debug(self, "Ícone de janela aplicado com sucesso")
+            AmadonLogging.debug(self, _("log.icon.applied"))
         except Exception as e:  # pragma: no cover - apenas fallback visual
-            AmadonLogging.warning(self, f"Falha ao aplicar ícone customizado: {e}")
+            AmadonLogging.warning(self, _("log.icon.failed").format(erro=e))
 
     def _create_book_icon(self) -> QIcon:
         size = 128
