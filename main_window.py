@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (
     QFrame,
 )
 from PySide6.QtCore import Qt, QSize
-from PySide6.QtGui import QAction, QIcon, QPainter, QPen, QBrush, QColor, QLinearGradient, QPixmap
+from PySide6.QtGui import QAction, QActionGroup, QIcon, QPainter, QPen, QBrush, QColor, QLinearGradient, QPixmap
 
 from mensagens import MensagensStatus, AmadonLogging
 from i18n import _
@@ -286,6 +286,7 @@ class MainWindow(QMainWindow):
         toolbar.setIconSize(QSize(32, 32))
         toolbar.setToolButtonStyle(Qt.ToolButtonStyle.ToolButtonTextUnderIcon)
         self.addToolBar(toolbar)
+        self._main_toolbar = toolbar
         # Ação atalho modo escuro
         from PySide6.QtGui import QKeySequence
         from app_settings import settings as _settings, apply_global_theme
@@ -312,7 +313,64 @@ class MainWindow(QMainWindow):
         toolbar.addSeparator()
         toolbar.addAction(self._action_toggle_dark)
 
-        # Estilo da toolbar agora definido no stylesheet global
+        # Torna ações principais 'checkable' para manter highlight após clique
+        self._toolbar_action_group = QActionGroup(self)
+        self._toolbar_action_group.setExclusive(True)
+        primary_actions = [
+            self._action_documentos,
+            self._action_assuntos,
+            self._action_artigos,
+            self._action_busca,
+            self._action_config,
+            self._action_ajuda,
+        ]
+        for act in primary_actions:
+            act.setCheckable(True)
+            self._toolbar_action_group.addAction(act)
+        self._primary_toolbar_actions = primary_actions
+
+        self._apply_toolbar_style()
+
+    def _apply_toolbar_style(self):
+        """Aplica estilo azul clássico à toolbar com hover dourado e item selecionado persistente."""
+        # Estilo independente do tema global (pode evoluir futuramente para variantes dark/light)
+        stylesheet = """
+        QToolBar#MainToolBar {
+            background: qlineargradient(x1:0, y1:0, x2:0, y2:1,
+                                        stop:0 #0d47a1, stop:1 #0a3d8f);
+            border: 0px;
+            padding: 4px;
+            spacing: 4px;
+        }
+        QToolBar#MainToolBar QToolButton {
+            background: transparent;
+            color: white;
+            border-radius: 6px;
+            padding: 4px 6px 2px 6px;
+            margin: 2px;
+        }
+        QToolBar#MainToolBar QToolButton:hover {
+            background: #1565c0;
+            color: gold;
+        }
+        QToolBar#MainToolBar QToolButton:pressed {
+            background: #0b437f;
+        }
+        QToolBar#MainToolBar QToolButton:checked {
+            background: #1565c0;
+            color: gold;
+            border: 1px solid #e0c060;
+        }
+        QToolBar#MainToolBar QToolButton:checked:hover {
+            background: #1e70cc;
+        }
+        QToolBar#MainToolBar QToolButton:disabled {
+            color: #cccccc;
+            background: #0d47a1;
+        }
+        """
+        if hasattr(self, '_main_toolbar'):
+            self._main_toolbar.setStyleSheet(stylesheet)
 
     def _theme_icon(self, theme_name: str, fallback_sp: QStyle.StandardPixmap) -> QIcon:
         """Tenta obter um ícone pelo nome de tema; se não existir (comum no Windows), usa fallback do QStyle.
@@ -334,31 +392,43 @@ class MainWindow(QMainWindow):
         from app_settings import settings
         settings.last_module = 'documentos'
         ToolBar_Documentos(self).GenerateData()
+        if hasattr(self, '_action_documentos'):
+            self._action_documentos.setChecked(True)
 
     def _abrir_assuntos(self):
         from app_settings import settings
         settings.last_module = 'assuntos'
         ToolBar_Assuntos(self).GenerateData()
+        if hasattr(self, '_action_assuntos'):
+            self._action_assuntos.setChecked(True)
 
     def _abrir_artigos(self):
         from app_settings import settings
         settings.last_module = 'artigos'
         ToolBar_Artigos(self).GenerateData()
+        if hasattr(self, '_action_artigos'):
+            self._action_artigos.setChecked(True)
 
     def _abrir_busca(self):
         from app_settings import settings
         settings.last_module = 'busca'
         ToolBar_Busca(self).GenerateData()
+        if hasattr(self, '_action_busca'):
+            self._action_busca.setChecked(True)
 
     def _abrir_configuracao(self):
         from app_settings import settings
         settings.last_module = 'configuracao'
         ToolBar_Configuracao(self).GenerateData()
+        if hasattr(self, '_action_config'):
+            self._action_config.setChecked(True)
 
     def _abrir_ajuda(self):
         from app_settings import settings
         settings.last_module = 'ajuda'
         ToolBar_Ajuda(self).GenerateData()
+        if hasattr(self, '_action_ajuda'):
+            self._action_ajuda.setChecked(True)
 
     def closeEvent(self, event):  # type: ignore[override]
         # Salva tamanho e posição
