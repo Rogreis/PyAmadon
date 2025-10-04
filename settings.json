@@ -5,14 +5,17 @@
     873
   ],
   "win_pos": [
-    114,
-    66
+    196,
+    81
   ],
-  "last_module": "documentos",
+  "last_module": "configuracao",
   "splitter_sizes": [
     581,
     782
   ],
-  "font_family": "Lato",
-  "web_zoom_factor": 1.4000000059604645
+  "font_family": "Verdana",
+  "web_zoom_factor": 1.4000000059604645,
+  "translation_slot1": 2,
+  "translation_slot2": 14,
+  "translation_slot3": 5
 }

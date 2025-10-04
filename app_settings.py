@@ -23,6 +23,9 @@ class AppSettings:
     splitter_sizes: list | None = None
     font_family: str = "Segoe UI"  # nova configuração de fonte preferida para leitura
     web_zoom_factor: float = 1.0  # fator de zoom (tamanho de fonte) para visores WebEngine
+    translation_slot1: int = -1  # índice da primeira tradução selecionada
+    translation_slot2: int = -1  # índice da segunda tradução selecionada
+    translation_slot3: int = -1  # índice da terceira tradução selecionada
 
     def toggle_dark_mode(self):  # pragma: no cover (UI toggle futuro)
         self.dark_mode = not self.dark_mode

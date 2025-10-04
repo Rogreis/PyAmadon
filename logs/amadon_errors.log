@@ -1,2 +1,21 @@
 2025-10-02 17:03:20 | Amadon | ERROR    | <module>:151 | Mensagem de ERROR
 2025-10-02 17:03:20 | Amadon | FATAL    | fatal:132 | Mensagem de FATAL - erro crítico
+2025-10-04 15:07:03 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 6: HTTP Error 404: Not Found
+2025-10-04 15:07:15 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1: HTTP Error 404: Not Found
+2025-10-04 15:07:15 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 6: HTTP Error 404: Not Found
+2025-10-04 15:08:34 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1: HTTP Error 404: Not Found
+2025-10-04 15:08:34 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 6: HTTP Error 404: Not Found
+2025-10-04 15:13:35 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:13:36 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 5 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR005.gz: HTTP Error 404: Not Found
+2025-10-04 15:19:20 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://github.com/Rogreis/TUB_Files/raw/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:19:24 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 3 da URL https://github.com/Rogreis/TUB_Files/raw/main/TR003.gz: HTTP Error 404: Not Found
+2025-10-04 15:22:07 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://github.com/Rogreis/TUB_Files/raw/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:22:11 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 4 da URL https://github.com/Rogreis/TUB_Files/raw/main/TR004.gz: HTTP Error 404: Not Found
+2025-10-04 15:26:19 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://github.com/Rogreis/TUB_Files/raw/refs/heads/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:26:23 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 5 da URL https://github.com/Rogreis/TUB_Files/raw/refs/heads/main/TR005.gz: HTTP Error 404: Not Found
+2025-10-04 15:46:22 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://github.com/Rogreis/TUB_Files/raw/refs/heads/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:47:00 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:47:06 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 2 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR002.gz: MD5 mismatch
+2025-10-04 15:47:26 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR001.gz: HTTP Error 404: Not Found
+2025-10-04 15:47:31 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 2 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR002.gz: MD5 mismatch
+2025-10-04 15:50:05 | Amadon | ERROR    | error:84 | Falha ao baixar tradução 1 da URL https://raw.githubusercontent.com/Rogreis/TUB_Files/main/TR001.gz: HTTP Error 404: Not Found

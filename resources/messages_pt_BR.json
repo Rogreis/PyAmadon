@@ -37,7 +37,8 @@
   "status.msg.assuntos": "Assuntos em desenvolvimento...",
   "status.msg.artigos": "Artigos em desenvolvimento...",
   "status.msg.busca": "Busca em desenvolvimento...",
-  "status.msg.configuracao": "Configuração em desenvolvimento...",
+  "config.tab.translations": "Traduções",
+  "config.tab.general": "Configuração",
   "status.msg.ajuda": "Ajuda em desenvolvimento...",
   "html.doc.title": "Documentos",
   "html.doc.intro": "Módulo de gestão e navegação de documentos (em desenvolvimento).",
@@ -69,4 +70,50 @@
   ,"config.font.desc": "Escolha a família tipográfica usada nos conteúdos (documentos e markdown)."
   ,"config.font.applied": "Fonte aplicada: {font}"
   ,"zoom.display": "Zoom: {factor}x"
+  ,"action.focus.enter": "Modo Leitura"
+  ,"action.focus.exit": "Sair Leitura"
+  ,"tooltip.focus.enter": "Ocultar menubar e toolbar (F11)"
+  ,"tooltip.focus.exit": "Restaurar menubar e toolbar (F11)"
+  ,"status.focus.on": "Modo de leitura ativado"
+  ,"status.focus.off": "Modo de leitura desativado"
+    ,"config.translations.section": "Seleção de Traduções"
+    ,"config.translations.desc": "Escolha até três traduções disponíveis (ou deixe em - Nenhuma -)."
+    ,"config.translation.slot1": "Tradução 1"
+    ,"config.translation.slot2": "Tradução 2"
+    ,"config.translation.slot3": "Tradução 3"
+    ,"config.translation.none": "- Nenhuma -"
+    ,"config.translation.applied": "Configuração de traduções atualizada"
+    ,"config.font.tooltip": "Escolha a fonte tipográfica usada na leitura e na renderização de documentos."
+    ,"config.darkmode.tooltip": "Alterna o tema entre claro e escuro imediatamente."
+    ,"config.translation.slot1.tip": "Selecione a primeira tradução (coluna 1) ou deixe - Nenhuma -."
+    ,"config.translation.slot2.tip": "Selecione a segunda tradução (coluna 2) ou deixe - Nenhuma -."
+    ,"config.translation.slot3.tip": "Selecione a terceira tradução (coluna 3) ou deixe - Nenhuma -."
+    ,"config.close.tip": "Fechar esta janela de configurações"
+    ,"config.translations.check.start": "Verificando traduções selecionadas..."
+    ,"config.translations.nochange": "Nenhuma alteração de tradução detectada"
+    ,"config.translations.file.missing": "Arquivo {file} ausente – será baixado"
+    ,"config.translations.hash.mismatch": "Arquivo {file} com hash divergente – rebaixando"
+    ,"config.translations.download.start": "Baixando tradução {idx}..."
+  ,"config.translations.download.url": "URL de download para tradução {idx}: {url}"
+    ,"config.translations.download.success": "Tradução {idx} baixada com sucesso"
+  ,"config.translations.download.detail": "Detalhe download tradução {idx}: {size} bytes em {secs}s"
+    ,"config.translations.download.error": "Falha ao baixar tradução {idx}: {erro}"
+  ,"config.translations.download.error.url": "Falha ao baixar tradução {idx} da URL {url}: {erro}"
+    ,"config.translations.verifying": "Verificando arquivos de traduções..."
+    ,"config.translations.all.ok": "Arquivos de traduções verificados"
+    ,"config.translations.downloading.ui": "Baixando TR{idx:03d}.gz..."
+    ,"config.translations.done": "Verificação concluída"
+    ,"config.translations.cancel": "Cancelar"
+    ,"config.translations.cancel.tip": "Cancelar verificação/transferência em andamento"
+    ,"config.translations.cancelled": "Operação cancelada"
+    ,"config.translations.reverting": "Revertendo seleções..."
+    ,"config.translations.retry.attempt": "Tentativa {n} para tradução {idx}"
+  ,"config.translations.retry.wait": "Aguardando {secs}s antes da próxima tentativa para tradução {idx}"
+    ,"config.translations.progress": "Processando {current}/{total}..."
+    ,"config.translations.download.skipped": "Tradução {idx} já válida"
+  ,"config.translations.summary.success": "Todas as traduções necessárias estão presentes e válidas. Fechando..."
+  ,"config.translations.summary.failure": "Uma ou mais traduções falharam após tentativas. Ajuste as seleções ou tente novamente."
+    ,"config.translations.summary.failure.list": "Falharam: {indices}"
+    ,"config.translations.retry.button": "Tentar novamente"
+    ,"config.translations.retry.button.tip": "Reiniciar verificação e tentativa de download das traduções pendentes"
 }
