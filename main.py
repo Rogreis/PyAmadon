@@ -4,6 +4,7 @@ import threading
 import time
 from pathlib import Path
 from PySide6.QtWidgets import QApplication
+from PySide6.QtGui import QFontDatabase
 
 from mensagens import AmadonLogging, MensagensStatus
 from main_window import main, main_window
@@ -73,9 +74,26 @@ def run():
         pass
 
     app = QApplication(sys.argv)
+
+    # Carrega fontes embarcadas (Lato e Roboto Condensed se existirem)
+    def _load_embedded_fonts():
+        font_dirs = [
+            Path('assets/fonts/Lato'),
+            Path('assets/fonts/RobotoCondensed'),
+        ]
+        for d in font_dirs:
+            if d.is_dir():
+                for f in d.glob('*.ttf'):
+                    try:
+                        QFontDatabase.addApplicationFont(str(f))
+                    except Exception:
+                        pass
+    _load_embedded_fonts()
     # Aplica tema ANTES de criar a janela para evitar flash branco
     apply_global_theme(app)
     window = main()  # obtém / cria instância global de MainWindow já com stylesheet ativo
+
+    window.show()
 
     # Exemplos iniciais (podem ser removidos posteriormente)
     MensagensStatus.curto(window, "Pronto")
@@ -84,7 +102,6 @@ def run():
     MensagensStatus.principal(window, "Amadon iniciado")
     AmadonLogging.info(window, "Aplicação Amadon iniciada com sucesso")
 
-    window.show()
     # Inicia download em background imediatamente após criação/mostra da janela
     threading.Thread(target=_background_download_translations, daemon=True).start()
     try:

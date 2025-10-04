@@ -1,16 +1,18 @@
 {
   "dark_mode": true,
   "win_size": [
-    916,
-    758
+    1373,
+    873
   ],
   "win_pos": [
-    -1336,
-    142
+    114,
+    66
   ],
   "last_module": "documentos",
   "splitter_sizes": [
-    386,
-    520
-  ]
+    581,
+    782
+  ],
+  "font_family": "Lato",
+  "web_zoom_factor": 1.4000000059604645
 }

@@ -65,4 +65,8 @@
   "config.applied.msg": "Alterações aplicadas com sucesso.",
   "translations.download.success": "AvailableTranslations.json baixado em {duration}s ({size} bytes)",
   "translations.download.error": "Falha ao obter AvailableTranslations.json: {error}"
+  ,"config.font.label": "Fonte de leitura"
+  ,"config.font.desc": "Escolha a família tipográfica usada nos conteúdos (documentos e markdown)."
+  ,"config.font.applied": "Fonte aplicada: {font}"
+  ,"zoom.display": "Zoom: {factor}x"
 }

@@ -2,6 +2,7 @@ from abc import ABC, abstractmethod
 from typing import Any
 from i18n import _
 from PySide6.QtWidgets import QWidget, QTextBrowser, QScrollArea, QVBoxLayout
+from PySide6.QtCore import Qt
 
 def _safe_logger():
     import logging
@@ -305,7 +306,102 @@ class ToolBar_Base(ABC):
             + "</body></html>"
         )
 
-        view = QWebEngineView()
+        # Subclasse com suporte a persistência de zoom
+        try:
+            from app_settings import settings as _settings
+        except Exception:  # pragma: no cover
+            _settings = None
+
+        outer_context = self.context
+        from i18n import _ as _tr
+
+        class AmadonWebView(QWebEngineView):  # type: ignore
+            def __init__(self, *a, **kw):
+                super().__init__(*a, **kw)
+                # Aplica fator salvo
+                if _settings is not None:
+                    try:
+                        self.setZoomFactor(float(getattr(_settings, 'web_zoom_factor', 1.0)))
+                    except Exception:
+                        pass
+
+            def wheelEvent(self, event):  # type: ignore[override]
+                try:
+                    if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+                        delta = event.angleDelta().y()
+                        step = 0.1
+                        z = self.zoomFactor()
+                        if delta > 0:
+                            z += step
+                        elif delta < 0:
+                            z -= step
+                        z = max(0.6, min(1.8, round(z, 2)))
+                        self.setZoomFactor(z)
+                        if _settings is not None:
+                            _settings.web_zoom_factor = float(z)
+                            try:
+                                _settings.save()
+                            except Exception:
+                                pass
+                        try:
+                            import logging
+                            logging.getLogger('Amadon').debug(f"Zoom atualizado via wheel para {z}")
+                        except Exception:
+                            pass
+                        # Mostra na barra de status (temporário)
+                        try:
+                            if outer_context is not None:
+                                from mensagens import MensagensStatus
+                                MensagensStatus.temporario_principal(outer_context, _tr("zoom.display").format(factor=f"{z:.1f}"), 1500)
+                        except Exception:
+                            pass
+                        event.accept()
+                        return
+                except Exception:
+                    pass
+                super().wheelEvent(event)
+
+            def keyPressEvent(self, event):  # type: ignore[override]
+                handled = False
+                try:
+                    if event.modifiers() & Qt.KeyboardModifier.ControlModifier:
+                        key = event.key()
+                        z = self.zoomFactor()
+                        if key in (Qt.Key.Key_Plus, Qt.Key.Key_Equal):  # Ctrl + '+'
+                            z = min(1.8, round(z + 0.1, 2))
+                            handled = True
+                        elif key == Qt.Key.Key_Minus:
+                            z = max(0.6, round(z - 0.1, 2))
+                            handled = True
+                        elif key in (Qt.Key.Key_0, Qt.Key.Key_Zero):
+                            z = 1.0
+                            handled = True
+                        if handled:
+                            self.setZoomFactor(z)
+                            if _settings is not None:
+                                _settings.web_zoom_factor = float(z)
+                                try:
+                                    _settings.save()
+                                except Exception:
+                                    pass
+                            try:
+                                import logging
+                                logging.getLogger('Amadon').debug(f"Zoom atualizado via teclado para {z}")
+                            except Exception:
+                                pass
+                            try:
+                                if outer_context is not None:
+                                    from mensagens import MensagensStatus
+                                    MensagensStatus.temporario_principal(outer_context, _tr("zoom.display").format(factor=f"{z:.1f}"), 1500)
+                            except Exception:
+                                pass
+                            event.accept()
+                            return
+                except Exception:
+                    pass
+                super().keyPressEvent(event)
+
+        view = AmadonWebView()
         view.setHtml(full_html)
         self.inject_widget(view, target=target, clear=clear)
 

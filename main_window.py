@@ -519,6 +519,21 @@ class MainWindow(QMainWindow):
         # Salva tamanho e posição
         try:
             from app_settings import settings
+            # Captura fator de zoom atual (primeiro QWebEngineView encontrado) antes de salvar
+            try:
+                from PySide6.QtWebEngineWidgets import QWebEngineView  # type: ignore
+                for panel_name in ('left_panel', 'right_panel'):
+                    panel = getattr(self, panel_name, None)
+                    if not panel:
+                        continue
+                    views = panel.findChildren(QWebEngineView)
+                    if views:
+                        zf = views[0].zoomFactor()
+                        if abs(getattr(settings, 'web_zoom_factor', 1.0) - zf) > 1e-6:
+                            settings.web_zoom_factor = float(zf)
+                        break
+            except Exception:
+                pass
             settings.win_size = [self.width(), self.height()]
             pos = self.pos()
             settings.win_pos = [pos.x(), pos.y()]
