@@ -200,7 +200,58 @@ class ToolBar_Base(ABC):
                 merged = f"<style>{css}</style>" + merged
             return self.inject_html(merged, target=target, clear=clear)
 
-        head_parts: list[str] = []
+        # Detecta tema atual da aplicação (fallback light)
+        try:
+            from app_settings import settings as _settings
+            is_dark = bool(getattr(_settings, 'dark_mode', False))
+        except Exception:  # pragma: no cover
+            is_dark = False
+
+        theme_css = (
+            """
+            /* Tema base para documentos embedados */
+            body.doc-body { margin:0; padding:16px 18px 40px 18px; font-family: system-ui, Arial, sans-serif; line-height:1.5; min-height:100%; }
+            body.doc-theme-light { background:#ffffff; color:#1d1d1d; }
+            body.doc-theme-dark { background:#121212; color:#e0e0e0; }
+            body.doc-body h1 { font-size:1.9em; margin:0.4em 0 0.6em; font-weight:600; }
+            body.doc-body h2 { font-size:1.45em; margin:1.2em 0 0.5em; font-weight:600; }
+            body.doc-body h3 { font-size:1.18em; margin:1em 0 0.4em; font-weight:600; }
+            body.doc-body p { margin:0 0 0.85em; }
+            body.doc-body a { text-decoration:none; }
+            body.doc-theme-light a { color:#0d47a1; }
+            body.doc-theme-light a:hover { text-decoration:underline; }
+            body.doc-theme-dark a { color:#64b5f6; }
+            body.doc-theme-dark a:hover { text-decoration:underline; }
+            body.doc-body code { font-family: Consolas, 'Courier New', monospace; font-size:0.95em; }
+            body.doc-theme-light code { background:#f0f2f5; color:#222; padding:2px 5px; border-radius:4px; }
+            body.doc-theme-dark code { background:#1e1e1e; color:#eee; padding:2px 5px; border-radius:4px; }
+            body.doc-theme-light pre { background:#f5f7fa; color:#1d1d1d; border:1px solid #d0d7e2; }
+            body.doc-theme-dark pre { background:#272822; color:#eee; border:1px solid #3a3f42; }
+            body.doc-body pre { padding:10px 12px; border-radius:8px; overflow:auto; }
+            body.doc-body table { border-collapse: collapse; margin:1em 0; }
+            body.doc-theme-light table th, body.doc-theme-light table td { border:1px solid #c7d4e5; }
+            body.doc-theme-dark table th, body.doc-theme-dark table td { border:1px solid #3a3f42; }
+            body.doc-body table th, body.doc-body table td { padding:6px 10px; font-size:0.92em; }
+            body.doc-body hr { border:none; height:1px; background:linear-gradient(to right, transparent, #888, transparent); margin:2em 0; }
+            body.doc-theme-dark hr { background:linear-gradient(to right, transparent, #444, transparent); }
+            body.doc-body blockquote { margin:1em 0; padding:8px 14px; border-left:4px solid #1565c0; border-radius:4px; }
+            body.doc-theme-light blockquote { background:#f0f5fb; color:#1d1d1d; }
+            body.doc-theme-dark blockquote { background:#1e1e24; color:#e0e0e0; border-left-color:#90caf9; }
+            body.doc-body .anchor-highlight { animation: anchorFlash 2.2s ease-in-out 1; }
+            @keyframes anchorFlash { 0% { box-shadow:0 0 0 0 rgba(255,215,0,0.9);} 60% { box-shadow:0 0 0 10px rgba(255,215,0,0);} 100% { box-shadow:0 0 0 0 rgba(255,215,0,0);} }
+            /* Scrollbar custom leve */
+            body.doc-theme-dark ::-webkit-scrollbar { width:10px; }
+            body.doc-theme-dark ::-webkit-scrollbar-track { background:#1e1e1e; }
+            body.doc-theme-dark ::-webkit-scrollbar-thumb { background:#3a3f42; border-radius:6px; }
+            body.doc-theme-dark ::-webkit-scrollbar-thumb:hover { background:#4a5054; }
+            body.doc-theme-light ::-webkit-scrollbar { width:10px; }
+            body.doc-theme-light ::-webkit-scrollbar-track { background:#f0f2f5; }
+            body.doc-theme-light ::-webkit-scrollbar-thumb { background:#c1ccd6; border-radius:6px; }
+            body.doc-theme-light ::-webkit-scrollbar-thumb:hover { background:#a5b2bd; }
+            """
+        )
+
+        head_parts: list[str] = [f"<style>{theme_css}</style>"]
         if use_bootstrap:
             head_parts.append(
                 "<link rel=\"stylesheet\" href=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css\" integrity=\"sha384-QWTKZyjpPEjISv5WaRU9OFeRpok6YctnYmDr5pNlyT2bRjXh0JMhjY6hW+ALEwIH\" crossorigin=\"anonymous\">"
@@ -222,12 +273,36 @@ class ToolBar_Base(ABC):
         if js:
             script_tail.append(f"<script>{js}</script>")
 
+        theme_class = 'doc-theme-dark' if is_dark else 'doc-theme-light'
+        transition_css = """
+        <style>
+        body.doc-body { opacity:0; transition: opacity .28s ease-in; }
+        body.doc-body.doc-loaded { opacity:1; }
+        #__doc_loading_placeholder {position:absolute; inset:0; display:flex; align-items:center; justify-content:center; font-family:system-ui,Arial,sans-serif; font-size:14px; color:#888; letter-spacing:.5px;}
+        body.doc-theme-dark #__doc_loading_placeholder { color:#aaa; }
+        .doc-spinner { width:42px; height:42px; border:4px solid rgba(120,140,160,0.35); border-top-color:#1565c0; border-radius:50%; animation:spin 0.9s linear infinite; margin-bottom:12px; }
+        body.doc-theme-dark .doc-spinner { border:4px solid rgba(255,255,255,0.18); border-top-color:#64b5f6; }
+        @keyframes spin { to { transform:rotate(360deg); } }
+        </style>
+        """
+        on_dom_loaded = """
+        <script>
+        document.addEventListener('DOMContentLoaded',()=>{
+            document.body.classList.add('doc-loaded');
+            const ph=document.getElementById('__doc_loading_placeholder');
+            if(ph){ ph.style.opacity='0'; setTimeout(()=>ph.remove(),300); }
+        });
+        </script>
+        """
         full_html = (
             "<html><head>"
             + "".join(head_parts)
-            + "</head><body>"
+            + transition_css
+            + f"</head><body class='doc-body {theme_class}'>"
+            + "<div id='__doc_loading_placeholder'><div style='text-align:center'><div class='doc-spinner'></div><div>Carregando...</div></div></div>"
             + body_html
             + "".join(script_tail)
+            + on_dom_loaded
             + "</body></html>"
         )
 
@@ -292,14 +367,26 @@ class ToolBar_Base(ABC):
             paras = '\n'.join(f'<p>{p}</p>' for p in markdown_text.splitlines() if p.strip())
             html_fragment = f"<div class='md-fallback'>{paras}</div>"
         body = f"<div class='markdown-body'>{html_fragment}</div>"
+        # CSS adaptativo para markdown respeitando classes de tema já definidas em inject_web_content
         default_css = (
             """
-            .markdown-body { line-height:1.5; font-size:14px; }
-            .markdown-body h1,h2,h3 { margin-top:1.2em; font-weight:600; }
-            .markdown-body pre { background:#272822; color:#eee; padding:8px; border-radius:6px; overflow:auto; }
-            .markdown-body code { background:#eee; padding:2px 4px; border-radius:3px; }
-            .markdown-body table { border-collapse:collapse; }
-            .markdown-body table th, .markdown-body table td { border:1px solid #ccc; padding:4px 8px; }
+            .markdown-body { line-height:1.55; font-size:14px; }
+            .markdown-body h1 { font-size:1.9em; margin:0.5em 0 0.6em; }
+            .markdown-body h2 { font-size:1.48em; margin:1.2em 0 0.55em; }
+            .markdown-body h3 { font-size:1.18em; margin:1em 0 0.45em; }
+            body.doc-theme-light .markdown-body pre { background:#f5f7fa; color:#1d1d1d; border:1px solid #d0d7e2; }
+            body.doc-theme-dark .markdown-body pre { background:#272822; color:#eee; border:1px solid #3a3f42; }
+            body.doc-theme-light .markdown-body code { background:#f0f2f5; color:#222; }
+            body.doc-theme-dark .markdown-body code { background:#1e1e1e; color:#eee; }
+            .markdown-body pre { padding:8px 10px; border-radius:6px; overflow:auto; font-size:0.92em; }
+            .markdown-body code { padding:2px 4px; border-radius:4px; }
+            .markdown-body table { border-collapse:collapse; margin:1em 0; }
+            body.doc-theme-light .markdown-body table th, body.doc-theme-light .markdown-body table td { border:1px solid #c7d4e5; }
+            body.doc-theme-dark .markdown-body table th, body.doc-theme-dark .markdown-body table td { border:1px solid #3a3f42; }
+            .markdown-body table th, .markdown-body table td { padding:6px 10px; font-size:0.92em; }
+            .markdown-body blockquote { margin:1em 0; padding:8px 14px; border-left:4px solid #1565c0; border-radius:4px; }
+            body.doc-theme-light .markdown-body blockquote { background:#f0f5fb; }
+            body.doc-theme-dark .markdown-body blockquote { background:#1e1e24; border-left-color:#90caf9; }
             """
         )
         merged_css = (default_css + (css or "")) if css else default_css

@@ -11,10 +11,9 @@ def run():
     """Ponto de entrada principal para iniciar a aplicação GUI."""
     logging.basicConfig(level=logging.INFO)
     app = QApplication(sys.argv)
-    window = main()  # obtém / cria instância global de MainWindow
-
-    # Aplica tema global conforme settings
+    # Aplica tema ANTES de criar a janela para evitar flash branco
     apply_global_theme(app)
+    window = main()  # obtém / cria instância global de MainWindow já com stylesheet ativo
 
     # Exemplos iniciais (podem ser removidos posteriormente)
     MensagensStatus.curto(window, "Pronto")

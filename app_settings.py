@@ -58,6 +58,11 @@ class AppSettings:
                 QPushButton:hover { background:#1e88e5; }
                 QPushButton:pressed { background:#0d47a1; }
                 QSplitter::handle { background:#2a2a2a; }
+                QTreeView::item { padding:2px 4px; }
+                QTreeView::item:selected { background:#264f78; color:#ffffff; }
+                QTreeView::item:hover { background:#1b3d5c; }
+                QWidget#LeftPanel, QWidget#RightPanel { background:#181a1c; }
+                QWidget#LeftPanel:empty, QWidget#RightPanel:empty { background:#181a1c; }
                 QLabel#StatusCurtoLabel { color:#bbbbbb; font-style:italic; padding:0 4px; margin-right:8px; }
                 QLabel#StatusLongoLabel { color:#b0b0b0; font-style:italic; padding:0 4px; margin-right:12px; }
                 QLabel#StatusPrincipalLabel { padding:2px 6px; }
@@ -77,6 +82,11 @@ class AppSettings:
                 QPushButton:hover { background:#1e88e5; }
                 QPushButton:pressed { background:#0d47a1; }
                 QSplitter::handle { background:#0a3d7a; }
+                QTreeView::item { padding:2px 4px; }
+                QTreeView::item:selected { background:#1565c0; color:#ffffff; }
+                QTreeView::item:hover { background:#0f4d92; }
+                QWidget#LeftPanel, QWidget#RightPanel { background:#f0f4f8; }
+                QWidget#LeftPanel:empty, QWidget#RightPanel:empty { background:#f0f4f8; }
                 QLabel#StatusCurtoLabel { color:#5a5a5a; font-style:italic; padding:0 4px; margin-right:8px; }
                 QLabel#StatusLongoLabel { color:#4a4a4a; font-style:italic; padding:0 4px; margin-right:12px; }
                 QLabel#StatusPrincipalLabel { padding:2px 6px; }

@@ -47,19 +47,8 @@ class ToolBar_Documentos(ToolBar_Base):
         tree.setHeaderHidden(True)
         vlayout.addWidget(tree, 1)
 
-        # Estilos tema claro / escuro
-        if settings.dark_mode:
-            tree.setStyleSheet(
-                "QTreeWidget { background:#1e1e1e; border:1px solid #3a3f45; color:#e0e0e0; }"
-                "QTreeView::item { padding:2px 4px; }"
-                "QTreeView::item:selected { background:#264f78; color:#ffffff; }"
-            )
-        else:
-            tree.setStyleSheet(
-                "QTreeWidget { background:#ffffff; border:1px solid #c7d4e5; color:#222; }"
-                "QTreeView::item { padding:2px 4px; }"
-                "QTreeView::item:selected { background:#1565c0; color:#fff; }"
-            )
+        # Usa estilos globais (dark/light) definidos em app_settings; apenas um ajuste mínimo de borda
+        tree.setStyleSheet("QTreeWidget { border-radius:4px; }")
 
         import json, os
 

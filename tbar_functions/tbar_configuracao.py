@@ -26,6 +26,23 @@ class ToolBar_Configuracao(ToolBar_Base):
                 chk_dark = QCheckBox(_("config.darkmode.label"), dialog)
                 chk_dark.setChecked(settings.dark_mode)
                 layout.addWidget(chk_dark)
+                def _instant_toggle(state: int):
+                    # Alterna diretamente sem esperar botão aplicar
+                    desired = state == 2
+                    if desired != settings.dark_mode:
+                        settings.dark_mode = desired
+                        from PySide6.QtWidgets import QApplication
+                        app = QApplication.instance()
+                        if app:
+                            apply_global_theme(app)
+                            # Atualiza webviews existentes
+                            try:
+                                if hasattr(self.context, '_update_embedded_docs_theme'):
+                                    self.context._update_embedded_docs_theme()
+                            except Exception:
+                                pass
+                        settings.save()
+                chk_dark.stateChanged.connect(_instant_toggle)  # type: ignore
                 desc = QLabel(_("config.darkmode.desc"), dialog)
                 desc.setStyleSheet("font-size:11px;color:#666;")
                 desc.setWordWrap(True)
@@ -36,18 +53,8 @@ class ToolBar_Configuracao(ToolBar_Base):
                 btn_close = QPushButton(_("config.close"), dialog)
 
                 def apply_changes():
-                    changed = False
-                    if chk_dark.isChecked() != settings.dark_mode:
-                        settings.dark_mode = chk_dark.isChecked()
-                        # Reaplica tema global
-                        from PySide6.QtWidgets import QApplication
-                        app = QApplication.instance()
-                        if app:
-                            apply_global_theme(app)
-                        changed = True
-                    if changed:
-                        settings.save()
-                        QMessageBox.information(dialog, _("config.applied.title"), _("config.applied.msg"))
+                    # Botão aplicar agora apenas confirma estado atual
+                    QMessageBox.information(dialog, _("config.applied.title"), _("config.applied.msg"))
 
                 btn_apply.clicked.connect(apply_changes)
                 btn_close.clicked.connect(dialog.accept)

@@ -384,3 +384,115 @@
 2025-10-04 08:22:16 | Amadon | INFO     | info:76 | Abrindo módulo: Busca (placeholder)
 2025-10-04 08:22:18 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
 2025-10-04 08:22:26 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:24:59 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:24:59 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:24:59 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:24:59 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:24:59 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:25:01 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:25:04 | Amadon | INFO     | info:76 | Abrindo módulo: Configuração (placeholder)
+2025-10-04 08:26:36 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:29:33 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:30:18 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:30:18 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:30:18 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:30:18 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:30:18 | Amadon | INFO     | info:76 | Abrindo módulo: Configuração (placeholder)
+2025-10-04 08:30:27 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:30:33 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:30:35 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:30:37 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc003.html#p001_001_001
+2025-10-04 08:30:44 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:30:46 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:31:04 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:31:04 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:31:04 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:31:04 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:31:04 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:31:04 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:31:20 | Amadon | INFO     | info:76 | Abrindo módulo: Busca (placeholder)
+2025-10-04 08:31:24 | Amadon | INFO     | info:76 | Abrindo módulo: Configuração (placeholder)
+2025-10-04 08:32:51 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:34:05 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:34:05 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:34:05 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:34:05 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:34:05 | Amadon | INFO     | info:76 | Abrindo módulo: Configuração (placeholder)
+2025-10-04 08:34:13 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:34:16 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:34:18 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:34:30 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:37:04 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:37:04 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:37:04 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:37:04 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:37:04 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:37:04 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:38:40 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:40:28 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:40:28 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:40:28 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:40:28 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:40:28 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:40:28 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:40:43 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc006.html#p001_002_001
+2025-10-04 08:40:44 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:40:46 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc003.html#p001_001_001
+2025-10-04 08:41:16 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc006.html#p001_002_001
+2025-10-04 08:41:17 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:41:19 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc012.html#p002_001_001
+2025-10-04 08:41:27 | Amadon | INFO     | info:76 | Abrindo módulo: Artigos (placeholder)
+2025-10-04 08:41:33 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:45:49 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:45:49 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:45:49 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:45:49 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:45:49 | Amadon | INFO     | info:76 | Abrindo módulo: Artigos (placeholder)
+2025-10-04 08:45:50 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:45:52 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:45:53 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc006.html#p001_002_001
+2025-10-04 08:45:55 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:45:56 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc003.html#p001_001_001
+2025-10-04 08:45:57 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc012.html#p002_001_001
+2025-10-04 08:46:01 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:46:28 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:46:28 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:46:28 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:46:28 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:46:28 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:46:28 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:46:37 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc006.html#p001_002_001
+2025-10-04 08:46:39 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:48:54 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:48:54 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:48:54 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:48:54 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:48:54 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:48:57 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:49:00 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc006.html#p001_002_001
+2025-10-04 08:49:01 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:49:02 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc003.html#p001_001_001
+2025-10-04 08:49:06 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc012.html#p002_001_001
+2025-10-04 08:49:10 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:49:32 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:49:32 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:49:32 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:49:32 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:49:32 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:49:33 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:49:35 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:49:38 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc006.html#p001_002_001
+2025-10-04 08:49:46 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc004.html#p001_001_002
+2025-10-04 08:49:47 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc003.html#p001_001_001
+2025-10-04 08:49:49 | Amadon | INFO     | info:76 | Abrindo nó de documentos: doc://Doc012.html#p002_001_001
+2025-10-04 08:49:52 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0
+2025-10-04 08:53:51 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:53:51 | Amadon | INFO     | info:76 | Iniciando aplicação Amadon
+2025-10-04 08:53:51 | Amadon | DEBUG    | debug:71 | Ícone de janela aplicado com sucesso
+2025-10-04 08:53:51 | Amadon | DEBUG    | debug:71 | Janela principal configurada
+2025-10-04 08:53:51 | Amadon | INFO     | info:76 | Abrindo módulo: Documentos (placeholder)
+2025-10-04 08:53:51 | Amadon | INFO     | info:76 | Aplicação Amadon iniciada com sucesso
+2025-10-04 08:53:54 | Amadon | INFO     | info:76 | Abrindo módulo: Assuntos (placeholder)
+2025-10-04 08:53:55 | Amadon | INFO     | info:76 | Abrindo módulo: Artigos (placeholder)
+2025-10-04 08:53:57 | Amadon | INFO     | info:76 | Abrindo módulo: Configuração (placeholder)
+2025-10-04 08:54:21 | Amadon | INFO     | info:76 | Aplicação encerrada normalmente com código: 0

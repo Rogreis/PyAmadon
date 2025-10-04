@@ -178,12 +178,14 @@ class MainWindow(QMainWindow):
         splitter.setHandleWidth(8)
         # Painel esquerdo (30%) - sem placeholder inicial
         left = QWidget(splitter)
+        left.setObjectName("LeftPanel")
         left_layout = QVBoxLayout(left)
         left_layout.setContentsMargins(6, 6, 6, 6)
         left_layout.setSpacing(4)
 
         # Painel direito (70%) - sem placeholder inicial
         right = QWidget(splitter)
+        right.setObjectName("RightPanel")
         right_layout = QVBoxLayout(right)
         right_layout.setContentsMargins(6, 6, 6, 6)
         right_layout.setSpacing(4)
@@ -299,6 +301,11 @@ class MainWindow(QMainWindow):
             app = QApplication.instance()
             if app:
                 apply_global_theme(app)
+                # Atualiza tema dos documentos embutidos sem reinjetar
+                try:
+                    self._update_embedded_docs_theme()
+                except Exception:
+                    pass
             _settings.save()
         self._action_toggle_dark.triggered.connect(_toggle_dark)
         # Ações na ordem desejada
@@ -330,6 +337,8 @@ class MainWindow(QMainWindow):
         self._primary_toolbar_actions = primary_actions
 
         self._apply_toolbar_style()
+        # Ajusta rótulo inicial do toggle Dark/Light
+        self._update_dark_toggle_action()
 
     def _apply_toolbar_style(self):
         """Aplica estilo azul clássico à toolbar com hover dourado e item selecionado persistente."""
@@ -371,6 +380,51 @@ class MainWindow(QMainWindow):
         """
         if hasattr(self, '_main_toolbar'):
             self._main_toolbar.setStyleSheet(stylesheet)
+
+    def _update_dark_toggle_action(self):
+        """Atualiza texto e tooltip do botão de alternância de tema (Dark/Light)."""
+        if not hasattr(self, '_action_toggle_dark'):
+            return
+        try:
+            from app_settings import settings as _settings
+            is_dark = bool(getattr(_settings, 'dark_mode', False))
+        except Exception:
+            is_dark = False
+        if is_dark:
+            self._action_toggle_dark.setText("Light")
+            self._action_toggle_dark.setToolTip("Alternar para modo claro (Ctrl+Alt+D)")
+        else:
+            self._action_toggle_dark.setText("Dark")
+            self._action_toggle_dark.setToolTip("Alternar para modo escuro (Ctrl+Alt+D)")
+
+    def _update_embedded_docs_theme(self):
+        """Atualiza dinamicamente o tema (dark/light) dos QWebEngineView já carregados.
+
+        Troca somente a classe do <body> sem reinjetar todo o conteúdo para preservar
+        posição de scroll e estado JS leve.
+        """
+        try:
+            from PySide6.QtWebEngineWidgets import QWebEngineView  # type: ignore
+        except Exception:  # pragma: no cover
+            return
+        try:
+            from app_settings import settings as _settings
+            is_dark = bool(getattr(_settings, 'dark_mode', False))
+        except Exception:  # pragma: no cover
+            is_dark = False
+        target_class = 'doc-theme-dark' if is_dark else 'doc-theme-light'
+        js = f"(function(cls){{const b=document.body;if(!b)return;b.classList.remove('doc-theme-light','doc-theme-dark');b.classList.add(cls);}})('{target_class}');"
+        for panel_name in ('left_panel', 'right_panel'):
+            panel = getattr(self, panel_name, None)
+            if not panel:
+                continue
+            # Remove estilos inline específicos antigos (caso algum tivesse sido aplicado)
+            # deixamos apenas estilos mínimos configurados na criação (opcional futura limpeza)
+            for view in panel.findChildren(QWebEngineView):
+                try:
+                    view.page().runJavaScript(js)
+                except Exception:
+                    pass
 
     def _theme_icon(self, theme_name: str, fallback_sp: QStyle.StandardPixmap) -> QIcon:
         """Tenta obter um ícone pelo nome de tema; se não existir (comum no Windows), usa fallback do QStyle.
