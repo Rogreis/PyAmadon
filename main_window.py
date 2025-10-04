@@ -75,6 +75,8 @@ class MainWindow(QMainWindow):
         AmadonLogging.info(self, _("log.init.app"))
         self._apply_window_icon()
         self.setWindowTitle(_("app.title"))
+        # Estado interno do modo de leitura (focus mode)
+        self._focus_mode: bool = False
         # Restaura tamanho/posição se existir
         try:
             from app_settings import settings
@@ -326,6 +328,12 @@ class MainWindow(QMainWindow):
         toolbar.addAction(self._action_ajuda)
         toolbar.addSeparator()
         toolbar.addAction(self._action_toggle_dark)
+        # Ação modo leitura (focus) - F11
+        self._action_focus = QAction(_("action.focus.enter"), self)
+        # Atalho F11 será tratado por QShortcut e keyPressEvent; não definimos no QAction para evitar ambiguidade
+        self._action_focus.setToolTip(_("tooltip.focus.enter"))
+        self._action_focus.triggered.connect(self._toggle_focus_mode)
+        toolbar.addAction(self._action_focus)
 
         # Torna ações principais 'checkable' para manter highlight após clique
         self._toolbar_action_group = QActionGroup(self)
@@ -346,6 +354,21 @@ class MainWindow(QMainWindow):
         self._apply_toolbar_style()
         # Ajusta rótulo inicial do toggle Dark/Light
         self._update_dark_toggle_action()
+        # Ajusta rótulo inicial do modo leitura
+        self._update_focus_action()
+        # Atalhos dedicados (garantem funcionamento mesmo com toolbar oculta)
+        from PySide6.QtGui import QShortcut, QKeySequence
+        # Apenas um QShortcut (F11); se houver ambiguidade futura, podemos migrar para um atalho alternativo configurável
+        self._shortcut_focus_toggle = QShortcut(QKeySequence("F11"), self)
+        self._shortcut_focus_toggle.setContext(Qt.ShortcutContext.ApplicationShortcut)
+        self._shortcut_focus_toggle.activated.connect(self._toggle_focus_mode)
+        # ESC sai do modo leitura se ativo
+        self._shortcut_focus_escape = QShortcut(QKeySequence("Esc"), self)
+        self._shortcut_focus_escape.setContext(Qt.ShortcutContext.ApplicationShortcut)
+        def _esc_exit():
+            if getattr(self, '_focus_mode', False):
+                self._toggle_focus_mode()
+        self._shortcut_focus_escape.activated.connect(_esc_exit)
 
     def _apply_toolbar_style(self):
         """Aplica estilo azul clássico à toolbar com hover dourado e item selecionado persistente."""
@@ -403,6 +426,122 @@ class MainWindow(QMainWindow):
         else:
             self._action_toggle_dark.setText("Dark")
             self._action_toggle_dark.setToolTip("Alternar para modo escuro (Ctrl+Alt+D)")
+
+    # --- Focus / Reading Mode ---
+    def _toggle_focus_mode(self):
+        """Alterna o modo de leitura.
+
+        Entrada no modo leitura:
+          - Oculta menubar, toolbar principal e barra de status
+          - Oculta painel esquerdo (navegação) e expande conteúdo
+          - Salva tamanhos originais do splitter e geometria da janela
+          - Vai para tela cheia (fullscreen) para leitura sem distrações
+          - Injeta classe CSS em WebViews para melhorar legibilidade
+
+        Saída restaura tudo.
+        """
+        entering = not self._focus_mode
+        if entering:
+            # Salva estado anterior apenas na entrada
+            try:
+                self._focus_prev_state = {
+                    'split_sizes': getattr(self.splitter, 'sizes', lambda: [])(),
+                    'geometry': self.saveGeometry(),
+                    'win_w': self.width(),
+                    'win_h': self.height(),
+                    'was_fullscreen': self.isFullScreen(),
+                    'was_maximized': self.isMaximized(),
+                    'left_visible': getattr(self.left_panel, 'isVisible', lambda: True)(),
+                    'status_visible': self.statusBar().isVisible()
+                }
+            except Exception:
+                self._focus_prev_state = {}
+        self._focus_mode = entering
+        # Menubar & toolbar
+        try:
+            mb = self.menuBar()
+            if mb:
+                mb.setVisible(not self._focus_mode)
+        except Exception:
+            pass
+        try:
+            if hasattr(self, '_main_toolbar'):
+                self._main_toolbar.setVisible(not self._focus_mode)
+        except Exception:
+            pass
+        # Status bar
+        try:
+            self.statusBar().setVisible(not self._focus_mode)
+        except Exception:
+            pass
+        # Painel esquerdo / splitter
+        try:
+            if self._focus_mode:
+                if hasattr(self, 'left_panel'):
+                    self.left_panel.setVisible(False)
+                if hasattr(self, 'splitter'):
+                    self.splitter.setSizes([0, max(1, self.width())])
+            else:
+                if hasattr(self, 'left_panel') and self._focus_prev_state.get('left_visible', True):
+                    self.left_panel.setVisible(True)
+                if hasattr(self, 'splitter'):
+                    prev = self._focus_prev_state.get('split_sizes') if hasattr(self, '_focus_prev_state') else None
+                    if prev and isinstance(prev, list) and len(prev) == 2:
+                        self.splitter.setSizes(prev)
+        except Exception:
+            pass
+        # Fullscreen / restore
+        try:
+            if self._focus_mode:
+                self.showFullScreen()
+            else:
+                # Sai do fullscreen primeiro
+                if self.isFullScreen():
+                    self.showNormal()
+                # Restaura estado anterior
+                prev = getattr(self, '_focus_prev_state', {})
+                if prev.get('was_maximized') and not prev.get('was_fullscreen'):
+                    self.showMaximized()
+        except Exception:
+            pass
+        # Ajusta CSS nos WebViews
+        try:
+            from PySide6.QtWebEngineWidgets import QWebEngineView  # type: ignore
+            js_prepare = """(function(){if(!document.getElementById('focusReadingStyle')){var s=document.createElement('style');s.id='focusReadingStyle';s.textContent='body.focus-reading{max-width:1100px;margin:0 auto;padding:28px 40px;font-size:1.08em;line-height:1.5;}';document.head.appendChild(s);}})();"""
+            js_add = "(function(){document.body&&document.body.classList.add('focus-reading');})();"
+            js_remove = "(function(){document.body&&document.body.classList.remove('focus-reading');})();"
+            for panel_name in ('left_panel', 'right_panel'):
+                panel = getattr(self, panel_name, None)
+                if not panel:
+                    continue
+                for view in panel.findChildren(QWebEngineView):
+                    try:
+                        if self._focus_mode:
+                            view.page().runJavaScript(js_prepare)
+                            view.page().runJavaScript(js_add)
+                        else:
+                            view.page().runJavaScript(js_remove)
+                    except Exception:
+                        pass
+        except Exception:
+            pass
+        # Atualiza ação
+        self._update_focus_action()
+        # Mensagem de status
+        if self._focus_mode:
+            self.set_status_temporario(_("status.focus.on"), 3000)
+        else:
+            self.set_status_temporario(_("status.focus.off"), 3000)
+
+    def _update_focus_action(self):
+        if not hasattr(self, '_action_focus'):
+            return
+        if self._focus_mode:
+            self._action_focus.setText(_("action.focus.exit"))
+            self._action_focus.setToolTip(_("tooltip.focus.exit"))
+        else:
+            self._action_focus.setText(_("action.focus.enter"))
+            self._action_focus.setToolTip(_("tooltip.focus.enter"))
 
     def _update_embedded_docs_theme(self):
         """Atualiza dinamicamente o tema (dark/light) dos QWebEngineView já carregados.
@@ -609,6 +748,18 @@ class MainWindow(QMainWindow):
         painter.drawPath(path)
         painter.end()
         return QIcon(pm)
+
+    # --- Key events (fallback para garantir F11) ---
+    def keyPressEvent(self, event):  # type: ignore[override]
+        try:
+            if event.key() == Qt.Key.Key_F11:
+                # Garante toggle mesmo se QShortcut não disparar (ex.: foco interno WebEngine)
+                self._toggle_focus_mode()
+                event.accept()
+                return
+        except Exception:
+            pass
+        super().keyPressEvent(event)
 
 
 # Variável global que conterá a instância única da janela principal
