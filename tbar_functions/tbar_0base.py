@@ -1,4 +1,3 @@
-from __future__ import annotations
 from abc import ABC, abstractmethod
 from typing import Any
 from i18n import _
@@ -396,3 +395,7 @@ class ToolBar_Base(ABC):
     def GenerateData(self) -> str:  # noqa: N802
         """Executa a ação e retorna representação textual (diagnóstico)."""
         raise NotImplementedError
+
+    # Novo método Show para exibir componentes modais (default: no-op)
+    def Show(self):  # noqa: N802
+        pass

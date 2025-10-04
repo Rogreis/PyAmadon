@@ -3,8 +3,6 @@
 Expõe uma variável global `main_window` que conterá a instância única de `MainWindow`
 após a chamada da função `main()` deste módulo.
 """
-from __future__ import annotations
-
 import logging
 from typing import Optional
 
@@ -120,7 +118,16 @@ class MainWindow(QMainWindow):
                 'configuracao': self._abrir_configuracao,
                 'ajuda': self._abrir_ajuda,
             }
-            (mapping.get(_settings.last_module) or self._abrir_documentos)()
+            # Se o último módulo era 'configuracao', forçamos a abrir 'documentos'
+            if _settings.last_module == 'configuracao':
+                _settings.last_module = 'documentos'
+                try:
+                    _settings.save()
+                except Exception:
+                    pass
+                self._abrir_documentos()
+            else:
+                (mapping.get(_settings.last_module) or self._abrir_documentos)()
         except Exception:
             self._abrir_documentos()
 
@@ -445,42 +452,66 @@ class MainWindow(QMainWindow):
     def _abrir_documentos(self):
         from app_settings import settings
         settings.last_module = 'documentos'
-        ToolBar_Documentos(self).GenerateData()
+        tb = ToolBar_Documentos(self)
+        html = tb.GenerateData()
+        if html:
+            tb.inject_web_content(html, target='right', clear=True, use_bootstrap=True, css=tb.css_right(), js=tb.js_right())
+        tb.Show()
         if hasattr(self, '_action_documentos'):
             self._action_documentos.setChecked(True)
 
     def _abrir_assuntos(self):
         from app_settings import settings
         settings.last_module = 'assuntos'
-        ToolBar_Assuntos(self).GenerateData()
+        tb = ToolBar_Assuntos(self)
+        html = tb.GenerateData()
+        if html:
+            tb.inject_web_content(html, target='left', clear=True, use_bootstrap=False, css=tb.css_left())
+        tb.Show()
         if hasattr(self, '_action_assuntos'):
             self._action_assuntos.setChecked(True)
 
     def _abrir_artigos(self):
         from app_settings import settings
         settings.last_module = 'artigos'
-        ToolBar_Artigos(self).GenerateData()
+        tb = ToolBar_Artigos(self)
+        html = tb.GenerateData()
+        if html:
+            tb.inject_web_content(html, target='left', clear=True, css=tb.css_left())
+        tb.Show()
         if hasattr(self, '_action_artigos'):
             self._action_artigos.setChecked(True)
 
     def _abrir_busca(self):
         from app_settings import settings
         settings.last_module = 'busca'
-        ToolBar_Busca(self).GenerateData()
+        tb = ToolBar_Busca(self)
+        html = tb.GenerateData()
+        if html:
+            tb.inject_web_content(html, target='left', clear=True, css=tb.css_left())
+        tb.Show()
         if hasattr(self, '_action_busca'):
             self._action_busca.setChecked(True)
 
     def _abrir_configuracao(self):
         from app_settings import settings
         settings.last_module = 'configuracao'
-        ToolBar_Configuracao(self).GenerateData()
+        tb = ToolBar_Configuracao(self)
+        html = tb.GenerateData()
+        if html:
+            tb.inject_web_content(html, target='left', clear=True, css=tb.css_left())
+        tb.Show()
         if hasattr(self, '_action_config'):
             self._action_config.setChecked(True)
 
     def _abrir_ajuda(self):
         from app_settings import settings
         settings.last_module = 'ajuda'
-        ToolBar_Ajuda(self).GenerateData()
+        tb = ToolBar_Ajuda(self)
+        html = tb.GenerateData()
+        if html:
+            tb.inject_web_content(html, target='left', clear=True, use_bootstrap=True, css=tb.css_left(), js=tb.js_left())
+        tb.Show()
         if hasattr(self, '_action_ajuda'):
             self._action_ajuda.setChecked(True)
 

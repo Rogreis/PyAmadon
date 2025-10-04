@@ -16,8 +16,6 @@ Extensões futuras:
 - Validar unicidade de IDs.
 - Gerar sugestão de próximas âncoras disponíveis.
 """
-from __future__ import annotations
-
 import json
 import re
 from pathlib import Path

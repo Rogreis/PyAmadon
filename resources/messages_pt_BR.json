@@ -62,5 +62,7 @@
   "config.apply": "Aplicar",
   "config.close": "Fechar",
   "config.applied.title": "Configurações",
-  "config.applied.msg": "Alterações aplicadas com sucesso."
+  "config.applied.msg": "Alterações aplicadas com sucesso.",
+  "translations.download.success": "AvailableTranslations.json baixado em {duration}s ({size} bytes)",
+  "translations.download.error": "Falha ao obter AvailableTranslations.json: {error}"
 }

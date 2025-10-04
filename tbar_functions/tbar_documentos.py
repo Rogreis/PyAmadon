@@ -1,5 +1,4 @@
-from __future__ import annotations
-from .tbar_0base import ToolBar_Base
+from tbar_functions.tbar_0base import ToolBar_Base
 from i18n import _
 from PySide6.QtWidgets import (
     QTreeWidget,
@@ -9,13 +8,12 @@ from PySide6.QtWidgets import (
     QVBoxLayout,
 )
 from pathlib import Path
-from app_settings import settings
-from PySide6.QtGui import QIcon
 from PySide6.QtWidgets import QApplication
 from document_resolver import resolve_doc_link
 
 class ToolBar_Documentos(ToolBar_Base):
-    def GenerateData(self) -> str:  # noqa: N802
+    def __init__(self, context=None):
+        super().__init__(context)
         self._log_info("log.open.documentos")
         self._status_curto("status.curto.doc")
         self._status_principal("status.msg.documentos")
@@ -24,46 +22,38 @@ class ToolBar_Documentos(ToolBar_Base):
         js_path = base / 'assets' / 'js' / 'documentos.js'
         tree_json = base / 'assets' / 'data' / 'documentos_tree.json'
         try:
-            css_external = css_path.read_text(encoding='utf-8')
+            self._css_external = css_path.read_text(encoding='utf-8')
         except Exception:
-            css_external = "body{font-family:Segoe UI,Arial,sans-serif;}"
+            self._css_external = "body{font-family:Segoe UI,Arial,sans-serif;}"
         try:
-            js_external = js_path.read_text(encoding='utf-8')
+            self._js_external = js_path.read_text(encoding='utf-8')
         except Exception:
-            js_external = "console.warn('documentos.js não encontrado');"
+            self._js_external = "console.warn('documentos.js não encontrado');"
 
-        # Container com filtro + árvore
+        # Monta árvore (widget esquerdo)
         container = QWidget()
         vlayout = QVBoxLayout(container)
         vlayout.setContentsMargins(0, 0, 0, 0)
         vlayout.setSpacing(4)
-
         filtro = QLineEdit()
         filtro.setPlaceholderText(_("filter.placeholder.documentos"))
         filtro.setClearButtonEnabled(True)
         vlayout.addWidget(filtro)
-
         tree = QTreeWidget()
         tree.setHeaderHidden(True)
         vlayout.addWidget(tree, 1)
-
-        # Usa estilos globais (dark/light) definidos em app_settings; apenas um ajuste mínimo de borda
         tree.setStyleSheet("QTreeWidget { border-radius:4px; }")
-
-        import json, os
-
-        # Cache simples baseado em mtime
+        self._tree = tree
+        self._filter = filtro
+        import json
         cls = self.__class__
         if not hasattr(cls, '_cache_data'):
             cls._cache_data = None  # type: ignore[attr-defined]
             cls._cache_mtime = None  # type: ignore[attr-defined]
-
-        mtime = None
         try:
             mtime = tree_json.stat().st_mtime
         except Exception:
-            pass
-
+            mtime = None
         if getattr(cls, '_cache_data') is None or getattr(cls, '_cache_mtime') != mtime:
             try:
                 data = json.loads(tree_json.read_text(encoding='utf-8'))
@@ -73,15 +63,13 @@ class ToolBar_Documentos(ToolBar_Base):
             setattr(cls, '_cache_mtime', mtime)
         else:
             data = getattr(cls, '_cache_data')
-
         style = QApplication.instance().style() if QApplication.instance() else None
 
         def add_nodes(parent_item, nodes, level=0):
             for n in nodes:
                 titulo = n.get("titulo", "(sem título)")
                 item = QTreeWidgetItem([titulo])
-                item.setData(0, 32, n.get("link"))  # Qt.UserRole = 32
-                # Ícones simples por nível
+                item.setData(0, 32, n.get("link"))
                 if style:
                     if level == 0:
                         item.setIcon(0, style.standardIcon(style.StandardPixmap.SP_DirIcon))
@@ -96,19 +84,11 @@ class ToolBar_Documentos(ToolBar_Base):
                 filhos = n.get("filhos")
                 if filhos:
                     add_nodes(item, filhos, level + 1)
-
         add_nodes(None, data.get("nodes", []))
         tree.expandToDepth(1)
 
-        # Evento de clique: atualiza painel direito com detalhes do nó
         def on_item_clicked(item: QTreeWidgetItem):
-            titulo = item.text(0)
             link = item.data(0, 32) or "(sem link)"
-            # Esquema 'doc://' é lógico, usado para mapear futuramente a um
-            # repositório de textos (ex.: carregar conteúdo real do documento).
-            # Aqui apenas exibimos o identificador; uma evolução pode resolver
-            # doc://parte1/sec2/doc3 -> buscar texto em banco/arquivo.
-            # Log custom por nó
             try:
                 from mensagens import AmadonLogging
                 AmadonLogging.info(self.context, _("log.open.documentos.node").format(link=link))
@@ -117,7 +97,7 @@ class ToolBar_Documentos(ToolBar_Base):
             resolved = resolve_doc_link(str(link))
             body = f"""
             <div class='container py-3'>
-                <h2>{titulo}</h2>
+                <h2>{item.text(0)}</h2>
                 <p class='text-muted small mb-2'>ID lógico: <code>{link}</code></p>
                 <div class='mb-3 doc-content'>{resolved}</div>
                 <button id='btnCount' class='btn btn-primary btn-sm'>Clique para contar <span class='badge text-bg-light' id='ctr'>0</span></button>
@@ -125,16 +105,12 @@ class ToolBar_Documentos(ToolBar_Base):
                 <p class='footer-note text-secondary'>Renderizado em tempo real. Markdown suportado.</p>
             </div>
             """
-            # Limpa painel direito antes de inserir novo HTML
-            self.inject_web_content(body, target='right', clear=True, use_bootstrap=True, css=css_external, js=js_external)
-
+            self.inject_web_content(body, target='right', clear=True, use_bootstrap=True, css=self._css_external, js=self._js_external)
         tree.itemClicked.connect(on_item_clicked)  # type: ignore
 
-        # Filtro
         def apply_filter(text: str):
             pattern = text.strip().lower()
             def match_item(it: QTreeWidgetItem):
-                # Se algum filho visível, mantém pai
                 child_match = False
                 for i in range(it.childCount()):
                     child = it.child(i)
@@ -147,15 +123,21 @@ class ToolBar_Documentos(ToolBar_Base):
             for i in range(tree.topLevelItemCount()):
                 match_item(tree.topLevelItem(i))
         filtro.textChanged.connect(apply_filter)  # type: ignore
-        # Injeta árvore no painel esquerdo
-        self.inject_widget(container, target='left', clear=True)
-        # Página inicial direita (mensagem introdutória)
-        intro_body = f"""
+        # Injeta painel esquerdo já na criação
+        if self.context:
+            self.inject_widget(container, target='left', clear=True)
+
+    def GenerateData(self) -> str:  # noqa: N802
+        return f"""
         <div class='container py-3'>
             <h2>{_("html.doc.title")}</h2>
             <p class='lead'>{_("html.doc.intro")}</p>
             <p>Selecione um nó da árvore à esquerda para ver detalhes.</p>
         </div>
         """
-        self.inject_web_content(intro_body, target='right', clear=True, use_bootstrap=True, css=css_external, js=js_external)
-        return _("status.msg.documentos")
+
+    def css_right(self):
+        return getattr(self, '_css_external', None)
+
+    def js_right(self):
+        return getattr(self, '_js_external', None)

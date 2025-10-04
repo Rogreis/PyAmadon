@@ -13,8 +13,6 @@ Formato do arquivo de recursos (JSON):
 
 Se a chave não existir, retorna a própria chave entre < > para facilitar identificação.
 """
-from __future__ import annotations
-
 from pathlib import Path
 import json
 from typing import Dict, Any

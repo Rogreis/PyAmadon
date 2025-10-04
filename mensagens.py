@@ -8,8 +8,6 @@ Esta classe concentra a lógica de atualização dos três elementos de status:
 Cada método é estático e recebe a janela principal (ou qualquer objeto que
 exponha os atributos necessários). Isso facilita testes e reutilização.
 """
-from __future__ import annotations
-
 from typing import Any, Optional
 import traceback
 
