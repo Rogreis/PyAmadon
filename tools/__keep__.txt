@@ -1,0 +1,1 @@
+Marcador para manter a pasta em controle de versão mesmo vazia.
