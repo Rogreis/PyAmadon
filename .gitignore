@@ -22,4 +22,8 @@ logs/*
 !logs/.gitkeep
 *.log
 /doc_sources/
-
+.coverage
+htmlcov/
+.tox/
+.nox/
+.pytest_cache/

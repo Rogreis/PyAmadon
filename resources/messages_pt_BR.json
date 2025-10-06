@@ -116,4 +116,8 @@
     ,"config.translations.summary.failure.list": "Falharam: {indices}"
     ,"config.translations.retry.button": "Tentar novamente"
     ,"config.translations.retry.button.tip": "Reiniciar verificação e tentativa de download das traduções pendentes"
+  ,"tab.buscas.title": "Buscas"
+  ,"tab.buscas.placeholder": "Módulo de buscas combinadas e histórico (em desenvolvimento)."
+  ,"tab.traducao.execucao.title": "Tradução em execução"
+  ,"tab.traducao.execucao.placeholder": "Painel de acompanhamento da tradução em andamento (em desenvolvimento)."
 }

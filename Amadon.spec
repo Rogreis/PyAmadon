@@ -10,7 +10,8 @@ a = Analysis(
     hookspath=[],
     hooksconfig={},
     runtime_hooks=[],
-    excludes=[],
+    # Exclui diretório de scripts auxiliares de desenvolvimento
+    excludes=['tools', 'unit_tests'],
     noarchive=False,
     optimize=0,
 )

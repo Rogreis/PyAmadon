@@ -70,6 +70,26 @@ class ToolBar_Configuracao(ToolBar_Base):
             tab_cfg_layout.setContentsMargins(8,8,8,8)
             tab_cfg_layout.setSpacing(10)
 
+            # --- Tab Buscas (nova) ---
+            tab_buscas = QWidget()
+            tab_buscas_layout = QVBoxLayout(tab_buscas)
+            tab_buscas_layout.setContentsMargins(8,8,8,8)
+            tab_buscas_layout.setSpacing(10)
+            lbl_buscas = QLabel(_("tab.buscas.placeholder"), tab_buscas)
+            lbl_buscas.setWordWrap(True)
+            tab_buscas_layout.addWidget(lbl_buscas)
+            tab_buscas_layout.addStretch(1)
+
+            # --- Tab Tradução em Execução (nova) ---
+            tab_tr_exec = QWidget()
+            tab_tr_exec_layout = QVBoxLayout(tab_tr_exec)
+            tab_tr_exec_layout.setContentsMargins(8,8,8,8)
+            tab_tr_exec_layout.setSpacing(10)
+            lbl_tr_exec = QLabel(_("tab.traducao.execucao.placeholder"), tab_tr_exec)
+            lbl_tr_exec.setWordWrap(True)
+            tab_tr_exec_layout.addWidget(lbl_tr_exec)
+            tab_tr_exec_layout.addStretch(1)
+
             # Checkbox Dark Mode
             chk_dark = QCheckBox(_("config.darkmode.label"), tab_cfg)
             chk_dark.setChecked(settings.dark_mode)
@@ -302,6 +322,9 @@ class ToolBar_Configuracao(ToolBar_Base):
 
             tabs.addTab(tab_trans, _("config.tab.translations"))
             tabs.addTab(tab_cfg, _("config.tab.general"))
+            # Novas abas adicionadas ao final conforme solicitado
+            tabs.addTab(tab_buscas, _("tab.buscas.title"))
+            tabs.addTab(tab_tr_exec, _("tab.traducao.execucao.title"))
 
             # Removido botão Aplicar (aplicação imediata). Mantém apenas Fechar.
             btn_close = QPushButton(_("config.close"), dialog)
