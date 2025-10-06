@@ -5,8 +5,8 @@
     873
   ],
   "win_pos": [
-    168,
-    67
+    -1545,
+    53
   ],
   "last_module": "configuracao",
   "splitter_sizes": [
@@ -17,5 +17,10 @@
   "web_zoom_factor": 1.4000000059604645,
   "translation_slot1": 2,
   "translation_slot2": 14,
-  "translation_slot3": 5
+  "translation_slot3": 5,
+  "search_max_items": 180,
+  "search_semantic_enabled": true,
+  "translation_edit_enabled": false,
+  "translation_edit_target": -1,
+  "translation_edit_repo_base": ""
 }

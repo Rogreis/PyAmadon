@@ -26,6 +26,13 @@ class AppSettings:
     translation_slot1: int = -1  # índice da primeira tradução selecionada
     translation_slot2: int = -1  # índice da segunda tradução selecionada
     translation_slot3: int = -1  # índice da terceira tradução selecionada
+    # Configurações de buscas
+    search_max_items: int = 200  # máximo de itens retornados/exibidos (10-300)
+    search_semantic_enabled: bool = False  # busca semântica experimental
+    # Edição de tradução em execução
+    translation_edit_enabled: bool = False  # habilita painel de edição
+    translation_edit_target: int = -1       # índice/ID da tradução alvo para edição (-1 = nenhuma)
+    translation_edit_repo_base: str = ""   # URL base do repositório de edição
 
     def toggle_dark_mode(self):  # pragma: no cover (UI toggle futuro)
         self.dark_mode = not self.dark_mode
